@@ -1,3 +1,14 @@
+##!/usr/bin/python3
+# -*- coding: utf-8 -*-
+# @Author: caifeiliu
+# @Email: caifei521@163.com
+# @File: ship.py
+# @Date: 2021-12-25 14:54:11
+# @Last Modified by: franc
+# @Last Modified time: 2021-12-26 00:13:10
+# @Project: alien_invasion
+# @Use: describe the ship of the game
+
 import pygame
 
 
@@ -39,3 +50,9 @@ class Ship:
     def blitme(self):
         ''' Draws the ship at the specified location'''
         self.screen.blit(self.image,self.rect)
+
+    def center_ship(self):
+        ''' Let the ship on the center bottom of screen '''
+
+        self.rect.midbottom = self.screen_rect.midbottom
+        self.x = float(self.rect.x)

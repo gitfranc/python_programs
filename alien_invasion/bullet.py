@@ -1,3 +1,14 @@
+##!/usr/bin/python3
+# -*- coding: utf-8 -*-
+# @Author: caifeiliu
+# @Email: caifei521@163.com
+# @File: bullet.py
+# @Date: 2021-12-25 14:54:11
+# @Last Modified by: franc
+# @Last Modified time: 2021-12-26 00:11:56
+# @Project: alien_invasion
+# @Use: describe the bullet for the game
+
 import pygame
 from pygame.sprite import Sprite
 
