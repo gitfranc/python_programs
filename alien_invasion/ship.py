@@ -5,18 +5,20 @@
 # @File: ship.py
 # @Date: 2021-12-25 14:54:11
 # @Last Modified by: franc
-# @Last Modified time: 2021-12-26 00:13:10
+# @Last Modified time: 2021-12-26 22:38:24
 # @Project: alien_invasion
 # @Use: describe the ship of the game
 
 import pygame
+from pygame.sprite import Sprite
 
 
-class Ship:
+class Ship(Sprite):
     ''' The class of manager the ship '''
 
     def __init__(self,ai_game):
         ''' init the ship and position '''
+        super().__init__()
         self.screen = ai_game.screen
         self.screen_rect = ai_game.screen.get_rect()
         self.settings = ai_game.settings
