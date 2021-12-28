@@ -1,18 +1,20 @@
 {% extends "learning_notes_apps/base.html"%}
 
-{% block content %}
-<p>Topics</p>
+{% block page_header %}
+  <h1>Topics</h1>
+{% endblock page_header %}
 
-<ul>
-  {% for topic in topics %}
-    <li>
+{% block content %}
+  <ul>
+    {% for topic in topics %}
+      <li><h3>
        <a href="{% url 'learning_notes_apps:topic' topic.id %}">{{ topic }}</a>
-    </li>
-  {% empty %}
-    <li>No topics have been added yet.</li>
+      </h3></li>
+    {% empty %}
+       <li><h3>No topics have been added yet.</h3></li>
   {% endfor %}
 </ul>
 
-<a href="{% url 'learning_notes_apps:new_topic' %}">Add a new topic</a>
+<h3><a href="{% url 'learning_notes_apps:new_topic' %}">Add a new topic</a></h3>
 {% endblock content %}
 

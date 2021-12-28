@@ -35,6 +35,9 @@ INSTALLED_APPS = [
     'learning_notes_apps',
     'users',
 
+    # The third part apps
+    'bootstrap4',
+
     # default app
     'django.contrib.admin',
     'django.contrib.auth',

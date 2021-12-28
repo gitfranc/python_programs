@@ -12,7 +12,7 @@ def index(request):
     ''' The homepage of the learning notes '''
     return render(request, "learning_notes_apps/index.html")
 
-@login_required
+
 def topics(request):
     ''' Display all of topics '''
     # topics = Topic.objects.order_by("date_added")
