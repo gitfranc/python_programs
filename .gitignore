@@ -1,2 +1,4 @@
 #python
 *.py[cod]
+learning_notes/ll_env/*
+
