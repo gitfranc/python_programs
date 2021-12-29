@@ -1,12 +1,18 @@
-{% extends "learning_notes_apps/base.html" %}
+{% extends "learning_notes_apps/base.html"%}
+{% load bootstrap4%}
+
+{% block page_header %}
+  <h2>Add a new topic</h2>
+{% endblock page_header %}
 
 {% block content %}
-<p>Add a new topic:</p>
-
-<form action="{% url 'learning_notes_apps:new_topic' %}" method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button name="submit">Add topic</button>
-</form>
+  <form action="{% url 'learning_notes_apps:new_topic' %}" method="post"
+    class="form">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+      <button name="submit" class="btn btn-primary">Add topic</button>
+    {% endbuttons %}
+  </form>
 {% endblock content %}
 

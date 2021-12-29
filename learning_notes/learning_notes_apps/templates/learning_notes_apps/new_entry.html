@@ -1,12 +1,19 @@
 {% extends "learning_notes_apps/base.html" %}
 
-{% block content %}
-<p><a href="{% url 'learning_notes_apps:topic' topic.id %}" >{{ topic }}</a></p>
+{% load bootstrap4%}
 
-<p>Add a new entry:</p>
-<form action="{% url 'learning_notes_apps:new_entry' topic.id %}" method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button name="submit">Add Entry</button>
-</form>
+{% block page_header %}
+  <h2><a href="{% url 'learning_notes_apps:topic' topic.id %}" >{{ topic }}</a></h2>
+{% endblock page_header %}
+
+{% block content %}
+  <h4>Add a new entry:</h4>
+  <form action="{% url 'learning_notes_apps:new_entry' topic.id %}" method="post"
+    class="form">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+      <button name="submit" class="btn btn-primary">Add Entry</button>
+    {% endbuttons %}
+  </form>
 {% endblock content %}
