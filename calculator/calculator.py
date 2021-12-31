@@ -5,13 +5,14 @@
 # @File: calculator.py
 # @Date: 2021-12-30 21:57:59
 # @Last Modified by: franc
-# @Last Modified time: 2021-12-31 19:30:23
+# @Last Modified time: 2022-01-01 00:45:24
 # @Project: calculator
 # @Use: The main function of Calculator
 
 from tkinter import Tk
 from tkinter import Label, Button
 from tkinter import StringVar
+from tkinter.font import Font
 import math
 
 from settings import Settings
@@ -26,156 +27,287 @@ class Calculator:
         # Step1 create root of window, Tk
         # Initialize root window and the variable of result
         self.root_window = Tk()
+
         # Tnitialize the settings
         self.settings = Settings(self)
-        self.root_window.config(bg=self.settings.color_btn_bg)
 
+        self.font = Font(family="Consolas", size=20)
+
+        # set the properties of window
+        self.root_window.title(self.settings.win_title)
+        self.root_window.maxsize(self.settings.win_width,
+                self.settings.win_height)
+        self.root_window.minsize(self.settings.win_width,
+                self.settings.win_height)
+
+        self.record = StringVar()
+        self.record.set("0")
         self.result = StringVar()
-        self.result.set("0")
+        self.result.set("")
 
 
-
-        # Initialize the label of result
-        self.result_label = Label(self.root_window, width=30, height=2,
-            fg=self.settings.color_num_fg, bg=self.settings.color_input_bg,
-            relief="sunken", anchor="se",textvariable=self.result)
-
-        # set the title of window
-        self.root_window.title(self.settings.cal_win_title)
 
     def clear_ce(self):
-        self.result.set("0")
+        self.record.set("0")
+        self.result.set("")
 
 
     def clear(self):
-        self.result.set("0")
+        self.record.set("0")
+        self.result.set("")
 
     def show(self, button_string):
-        content = self.result.get()
+        content = self.record.get()
         if content == "0":
             content = ""
-        self.result.set(content + button_string)
+        self.record.set(content + button_string)
 
 
     def backspace(self):
-        self.result.set(self.result.get()[:-1])
+        self.record.set(self.record.get()[:-1])
 
 
     def reciprocal(self):
-        res = eval("1"+"/" + self.result.get())
-        self.result.set(str(res))
+        try:
+            res = eval("1"+"/" + self.record.get())
+        except Exception:
+            print("illegal operation, Please check you input")
+        else:
+            self.record.set(str(res))
 
 
     def square(self):
-        res = eval(self.result.get() + "**" + "2")
-        self.result.set(str(res))
+        try:
+             res = eval(self.record.get() + "**" + "2")
+        except Exception:
+            print("illegal operation, Please check you input")
+        else:
+            self.result.set(str(res))
 
     def sqrt2(self):
-        res = math.sqrt(int(self.result.get()))
-        self.result.set(str(res))
+        try:
+            res = math.sqrt(int(self.record.get()))
+        except Exception:
+            print("illegal operation, Please check you input")
+        else:
+            self.record.set(str(res))
 
     def calculate(self):
-        res = eval(self.result.get())
-        self.result.set(self.result.get() + " = \n" + str(res))
+        try:
+            res = eval(self.record.get())
+        except Exception:
+            print("illegal operation, Please check you input")
+        else:
+            self.result.set(str(res))
 
     def pos_neg(self):
-        res = eval(self.result.get())
-        if res >= 0:
-            self.result.set("-"+ self.result.get())
+        try:
+            res = eval(self.record.get())
+        except Exception:
+            print("illegal operation, Please check you input")
         else:
-            res_neg = abs(res)
-            self.result.set(str(abs(res)))
+            if res >= 0:
+                self.record.set("-"+ self.record.get())
+            else:
+                res_neg = abs(res)
+                self.record.set(str(abs(res)))
 
 
     def cal_result_and_button(self):
         ''' Display the result and button '''
 
         # Display the result of calculation
-        self.result_label.grid(row=0, column=0, columnspan=4, padx=5, pady=5)
+        Label(self.root_window, width=self.settings.win_width,
+             height=2, font=self.font, fg=self.settings.color_num_fg,
+             bg=self.settings.color_input_bg, anchor="se",
+             textvariable=self.record).place(width=self.settings.win_width,
+             height=70)
+
+        Label(self.root_window, width=self.settings.win_width,
+             height=2, font=self.font, fg=self.settings.color_num_fg,
+             bg=self.settings.color_input_bg, anchor="se",
+             textvariable=self.result).place(y=70,width=self.settings.win_width,
+             height=70)
 
         # Display the button of calculator
         Button(self.root_window, text="%", width=self.settings.widget_width,
-                    fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg
-                    ,command=lambda: self.show("%")).grid(row=1, column=0)
+                    fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
+                    font=self.font,bd=0,command=lambda: self.show("%")).place(
+                    x=self.settings.widget_width * 0,
+                    y=140 + self.settings.widget_height * 0,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
         Button(self.root_window, text="CE", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    command=self.clear_ce).grid(row=1, column=1)
+                    font=self.font,bd=0,command=self.clear_ce).place(
+                    x=self.settings.widget_width * 1,
+                    y=140 + self.settings.widget_height * 0,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
         Button(self.root_window, text="C", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    command=self.clear).grid(row=1, column=2)
+                    font=self.font,bd=0,command=self.clear).place(
+                    x=self.settings.widget_width * 2,
+                    y=140 + self.settings.widget_height * 0,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
         Button(self.root_window, text="DEL", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    command=self.backspace).grid(row=1, column=3)
+                    font=self.font,bd=0,command=self.backspace).place(
+                    x=self.settings.widget_width * 3,
+                    y=140 + self.settings.widget_height * 0,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
 
          # row = 2
         Button(self.root_window, text="1/x", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    command=self.reciprocal).grid(row=2, column=0)
+                    font=self.font,bd=0,command=self.reciprocal).place(
+                    x=self.settings.widget_width * 0,
+                    y=140 + self.settings.widget_height * 1,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
         Button(self.root_window, text="x^2", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    command=self.square).grid(row=2, column=1)
+                    font=self.font,bd=0,command=self.square).place(
+                    x=self.settings.widget_width * 1,
+                    y=140 + self.settings.widget_height * 1,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
         Button(self.root_window, text="sqrt2", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    command=self.sqrt2).grid(row=2, column=2)
+                    font=self.font,bd=0,command=self.sqrt2).place(
+                    x=self.settings.widget_width * 2,
+                    y=140 + self.settings.widget_height * 1,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
         Button(self.root_window, text="/", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    command=lambda:self.show("/")).grid(row=2, column=3)
+                    font=self.font,bd=0,command=lambda:self.show("/")).place(
+                    x=self.settings.widget_width * 3,
+                    y=140 + self.settings.widget_height * 1,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
 
         # row = 3
         Button(self.root_window, text="7", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    command=lambda:self.show("7")).grid(row=3, column=0)
+                    font=self.font,bd=0,command=lambda:self.show("7")).place(
+                    x=self.settings.widget_width * 0,
+                    y=140 + self.settings.widget_height * 2,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
         Button(self.root_window, text="8", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    command=lambda:self.show("8")).grid(row=3, column=1)
+                    font=self.font,bd=0,command=lambda:self.show("8")).place(
+                    x=self.settings.widget_width * 1,
+                    y=140 + self.settings.widget_height * 2,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
         Button(self.root_window, text="9", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    command=lambda:self.show("9")).grid(row=3, column=2)
+                    font=self.font,bd=0,command=lambda:self.show("9")).place(
+                    x=self.settings.widget_width * 2,
+                    y=140 + self.settings.widget_height * 2,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
         Button(self.root_window, text="*", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    command=lambda:self.show("*")).grid(row=3, column=3)
+                    font=self.font,bd=0,command=lambda:self.show("*")).place(
+                    x=self.settings.widget_width * 3,
+                    y=140 + self.settings.widget_height * 2,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
 
         # row = 4
         Button(self.root_window, text="4", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    command=lambda:self.show("4")).grid(row=4, column=0)
+                    font=self.font,bd=0,command=lambda:self.show("4")).place(
+                    x=self.settings.widget_width * 0,
+                    y=140 + self.settings.widget_height * 3,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
         Button(self.root_window, text="5", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    command=lambda:self.show("5")).grid(row=4, column=1)
+                    font=self.font,bd=0,command=lambda:self.show("5")).place(
+                    x=self.settings.widget_width * 1,
+                    y=140 + self.settings.widget_height * 3,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
         Button(self.root_window, text="6", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    command=lambda:self.show("6")).grid(row=4, column=2)
+                    font=self.font,bd=0,command=lambda:self.show("6")).place(
+                    x=self.settings.widget_width * 2,
+                    y=140 + self.settings.widget_height * 3,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
         Button(self.root_window, text="-", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    command=lambda:self.show("-")).grid(row=4, column=3)
+                    font=self.font,bd=0,command=lambda:self.show("-")).place(
+                    x=self.settings.widget_width * 3,
+                    y=140 + self.settings.widget_height * 3,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
 
         # row = 5
         Button(self.root_window, text="1", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    command=lambda:self.show("1")).grid(row=5, column=0)
+                    font=self.font,bd=0,command=lambda:self.show("1")).place(
+                    x=self.settings.widget_width * 0,
+                    y=140 + self.settings.widget_height * 4,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
         Button(self.root_window, text="2", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                     command=lambda:self.show("2")).grid(row=5, column=1)
+                    font=self.font,bd=0,command=lambda:self.show("2")).place(
+                    x=self.settings.widget_width * 1,
+                    y=140 + self.settings.widget_height * 4,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
         Button(self.root_window, text="3", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    command=lambda:self.show("3")).grid(row=5, column=2)
+                    font=self.font,bd=0,command=lambda:self.show("3")).place(
+                    x=self.settings.widget_width * 2,
+                    y=140 + self.settings.widget_height * 4,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
         Button(self.root_window, text="+", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    command=lambda:self.show("+")).grid(row=5, column=3)
+                    font=self.font,bd=0,command=lambda:self.show("+")).place(
+                    x=self.settings.widget_width * 3,
+                    y=140 + self.settings.widget_height * 4,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
 
         # row = 6
         Button(self.root_window, text="+/-", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                     command=self.pos_neg).grid(row=6, column=0)
+                    font=self.font,bd=0,command=self.pos_neg).place(
+                    x=self.settings.widget_width * 0,
+                    y=140 + self.settings.widget_height * 5,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
         Button(self.root_window, text="0", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    command=lambda:self.show("0")).grid(row=6, column=1)
+                    font=self.font,bd=0,command=lambda:self.show("0")).place(
+                    x=self.settings.widget_width * 1,
+                    y=140 + self.settings.widget_height * 5,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
         Button(self.root_window, text=".", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    command=lambda:self.show(".")).grid(row=6, column=2)
+                    font=self.font,bd=0,command=lambda:self.show(".")).place(
+                    x=self.settings.widget_width * 2,
+                    y=140 + self.settings.widget_height * 5,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
         Button(self.root_window, text="=", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg="red",
-                    command=self.calculate).grid(row=6, column=3)
+                    font=self.font,bd=0,command=self.calculate).place(
+                    x=self.settings.widget_width * 3,
+                    y=140 + self.settings.widget_height * 5,
+                    width=self.settings.widget_width,
+                    height=self.settings.widget_height)
 
     def run_main(self):
         ''' The main function of calculator '''

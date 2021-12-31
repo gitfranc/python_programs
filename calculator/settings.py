@@ -5,7 +5,7 @@
 # @File: settings.py
 # @Date: 2021-12-30 23:57:32
 # @Last Modified by: franc
-# @Last Modified time: 2021-12-31 19:11:54
+# @Last Modified time: 2022-01-01 00:30:21
 # @Project: calculator
 # @Use: The settings for calculator
 
@@ -15,8 +15,15 @@ class Settings:
     def __init__(self, cal):
 
         ''' Intitialize the Settings '''
-        self.cal_win_title = "Calculator"
-        self.widget_width = 5
+        self.win_title = "Calculator"
+        self.win_width = 300
+        self.win_height = 560
+
+
+        self.widget_width = 75
+        self.widget_height = 70
+
+
         self.color_input_bg = "#393943"
         self.color_num_fg = "#DCDCDC"
         self.color_btn_fg = "#909194"
