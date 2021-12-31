@@ -5,7 +5,7 @@
 # @File: calculator.py
 # @Date: 2021-12-30 21:57:59
 # @Last Modified by: franc
-# @Last Modified time: 2021-12-31 19:27:19
+# @Last Modified time: 2021-12-31 19:30:23
 # @Project: calculator
 # @Use: The main function of Calculator
 
@@ -174,7 +174,7 @@ class Calculator:
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
                     command=lambda:self.show(".")).grid(row=6, column=2)
         Button(self.root_window, text="=", width=self.settings.widget_width,
-                    fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
+                    fg=self.settings.color_btn_fg, bg="red",
                     command=self.calculate).grid(row=6, column=3)
 
     def run_main(self):
