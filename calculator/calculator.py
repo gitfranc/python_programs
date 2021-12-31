@@ -5,7 +5,7 @@
 # @File: calculator.py
 # @Date: 2021-12-30 21:57:59
 # @Last Modified by: franc
-# @Last Modified time: 2021-12-31 00:30:11
+# @Last Modified time: 2021-12-31 10:37:48
 # @Project: calculator
 # @Use: The main function of Calculator
 
@@ -17,156 +17,150 @@ import math
 from settings import Settings
 
 
-def show(button_string):
-    content = result.get()
-    if content == "0":
-        content = ""
-    result.set(content + button_string)
+class Calculator:
+    ''' The class for calculator main function '''
 
-def clear_ce():
-    result.set("0")
+    def __init__(self):
+        ''' Initialize the calculator '''
 
-def clear():
-    result.set("0")
+        # Step1 create root of window, Tk
+        # Initialize root window and the variable of result
+        self.root_window = Tk()
 
+        self.result = StringVar()
+        self.result.set("0")
 
-def backspace():
-    result.set(result.get()[:-1])
+        # Initialize the label of result
+        self.result_label = Label(self.root_window, width=30, height=2,
+            relief="sunken", anchor="se", textvariable=self.result)
 
-def reciprocal():
+        # Tnitialize the settings
+        self.settings = Settings(self)
 
-    res = eval("1"+"/"+ result.get())
-    result.set(str(res))
+        # set the title of window
+        self.root_window.title(self.settings.cal_win_title)
 
-def square():
-    res = eval(result.get() + "**" + "2")
-    result.set(str(res))
-
-def sqrt2():
-    res = math.sqrt(int(result.get()))
-    result.set(str(res))
-
-def calculate():
-    res = eval(result.get())
-    result.set(result.get()+ " = \n" + str(res))
-
-def pos_neg():
-    global msg_on
-    res = eval(result.get())
-    if res >= 0:
-        result.set("-"+result.get())
-    else:
-        res_neg = abs(res)
-        result.set(str(abs(res)))
+    def clear_ce(self):
+        self.result.set("0")
 
 
+    def clear(self):
+        self.result.set("0")
+
+    def show(self, button_string):
+        content = self.result.get()
+        if content == "0":
+            content = ""
+        self.result.set(content + button_string)
 
 
+    def backspace(self):
+        self.result.set(self.result.get()[:-1])
 
 
-def cal_result_and_button(root, result):
-
-    # Display the result of calculation
-    result_label = Label(root, width=30, height=2, relief="sunken", anchor="se",
-                         textvariable=result)
-    result_label.grid(row=0, column=0, columnspan=4, padx=5, pady=5)
-
-    # Display the button of calculator
-    Button(root, text="%", width=settings.widget_width,
-            command=lambda:show("%")).grid(row=1,column=0)
-    Button(root, text="CE", width=settings.widget_width,
-            command=clear_ce).grid(row=1, column=1)
-    Button(root, text="C", width=settings.widget_width,
-            command=clear).grid(row=1, column=2)
-    Button(root, text="DEL", width=settings.widget_width,
-            command=backspace).grid(row=1, column=3)
-
-    # row = 2
-    Button(root, text="1/x", width=settings.widget_width,
-            command=reciprocal).grid(row=2, column=0)
-    Button(root, text="x^2", width=settings.widget_width,
-            command=square).grid(row=2, column=1)
-    Button(root, text="sqrt2", width=settings.widget_width,
-            command=sqrt2).grid(row=2, column=2)
-    Button(root, text="/", width=settings.widget_width,
-            command=lambda:show("/")).grid(row=2, column=3)
-
-    # row = 3
-    Button(root, text="7", width=settings.widget_width,
-            command=lambda:show("7")).grid(row=3, column=0)
-    Button(root, text="8", width=settings.widget_width,
-            command=lambda:show("8")).grid(row=3, column=1)
-    Button(root, text="9", width=settings.widget_width,
-            command=lambda:show("9")).grid(row=3, column=2)
-    Button(root, text="*", width=settings.widget_width,
-            command=lambda:show("*")).grid(row=3, column=3)
-
-    # row = 4
-    Button(root, text="4", width=settings.widget_width,
-            command=lambda:show("4")).grid(row=4, column=0)
-    Button(root, text="5", width=settings.widget_width,
-            command=lambda:show("5")).grid(row=4, column=1)
-    Button(root, text="6", width=settings.widget_width,
-            command=lambda:show("6")).grid(row=4, column=2)
-    Button(root, text="-", width=settings.widget_width,
-            command=lambda:show("-")).grid(row=4, column=3)
-
-    # row = 5
-    Button(root, text="1", width=settings.widget_width,
-            command=lambda:show("1")).grid(row=5, column=0)
-    Button(root, text="2", width=settings.widget_width,
-            command=lambda:show("2")).grid(row=5, column=1)
-    Button(root, text="3", width=settings.widget_width,
-            command=lambda:show("3")).grid(row=5, column=2)
-    Button(root, text="+", width=settings.widget_width,
-            command=lambda:show("+")).grid(row=5, column=3)
-
-     # row = 6
-    Button(root, text="+/-", width=settings.widget_width,
-            command=pos_neg).grid(row=6, column=0)
-    Button(root, text="0", width=settings.widget_width,
-            command=lambda:show("0")).grid(row=6, column=1)
-    Button(root, text=".", width=settings.widget_width,
-            command=lambda:show(".")).grid(row=6, column=2)
-    Button(root, text="=", width=settings.widget_width,
-            command=calculate).grid(row=6, column=3)
+    def reciprocal(self):
+        res = eval("1"+"/" + self.result.get())
+        self.result.set(str(res))
 
 
+    def square(self):
+        res = eval(self.result.get() + "**" + "2")
+        self.result.set(str(res))
+
+    def sqrt2(self):
+        res = math.sqrt(int(self.result.get()))
+        self.result.set(str(res))
+
+    def calculate(self):
+        res = eval(self.result.get())
+        self.result.set(self.result.get() + " = \n" + str(res))
+
+    def pos_neg(self):
+        res = eval(self.result.get())
+        if res >= 0:
+            self.result.set("-"+ self.result.get())
+        else:
+            res_neg = abs(res)
+            self.result.set(str(abs(res)))
 
 
-# Step1 create root of window, Tk
-cal_root_win = Tk()
-cal_root_win.title("Calculator")
+    def cal_result_and_button(self):
+        ''' Display the result and button '''
 
-# Create the settings of calculator
-settings = Settings()
+        # Display the result of calculation
+        self.result_label.grid(row=0, column=0, columnspan=4, padx=5, pady=5)
 
-msg_on = False
+        # Display the button of calculator
+        Button(self.root_window, text="%", width=self.settings.widget_width,
+                    command=lambda: self.show("%")).grid(row=1, column=0)
+        Button(self.root_window, text="CE", width=self.settings.widget_width,
+                    command=self.clear_ce).grid(row=1, column=1)
+        Button(self.root_window, text="C", width=self.settings.widget_width,
+                    command=self.clear).grid(row=1, column=2)
+        Button(self.root_window, text="DEL", width=self.settings.widget_width,
+                    command=self.backspace).grid(row=1, column=3)
 
-# Step2 create the widges and set them property
-result = StringVar()
-result.set("2")
-cal_result_and_button(cal_root_win, result)
+         # row = 2
+        Button(self.root_window, text="1/x", width=self.settings.widget_width,
+                    command=self.reciprocal).grid(row=2, column=0)
+        Button(self.root_window, text="x^2", width=self.settings.widget_width,
+                    command=self.square).grid(row=2, column=1)
+        Button(self.root_window, text="sqrt2", width=self.settings.widget_width,
+                    command=self.sqrt2).grid(row=2, column=2)
+        Button(self.root_window, text="/", width=self.settings.widget_width,
+                    command=lambda:self.show("/")).grid(row=2, column=3)
 
-# Step3 the tkinter main loop, wait for keyevent and so on
-cal_root_win.mainloop()
+        # row = 3
+        Button(self.root_window, text="7", width=self.settings.widget_width,
+                    command=lambda:self.show("7")).grid(row=3, column=0)
+        Button(self.root_window, text="8", width=self.settings.widget_width,
+                    command=lambda:self.show("8")).grid(row=3, column=1)
+        Button(self.root_window, text="9", width=self.settings.widget_width,
+                    command=lambda:self.show("9")).grid(row=3, column=2)
+        Button(self.root_window, text="*", width=self.settings.widget_width,
+                    command=lambda:self.show("*")).grid(row=3, column=3)
 
+        # row = 4
+        Button(self.root_window, text="4", width=self.settings.widget_width,
+                    command=lambda:self.show("4")).grid(row=4, column=0)
+        Button(self.root_window, text="5", width=self.settings.widget_width,
+                    command=lambda:self.show("5")).grid(row=4, column=1)
+        Button(self.root_window, text="6", width=self.settings.widget_width,
+                    command=lambda:self.show("6")).grid(row=4, column=2)
+        Button(self.root_window, text="-", width=self.settings.widget_width,
+                    command=lambda:self.show("-")).grid(row=4, column=3)
 
-# def run_main():
-#     ''' The main function of calculator '''
-#     # Step1 create root of window, Tk
-#     cal_root_win = Tk()
-#     cal_root_win.title("Calculator")
+        # row = 5
+        Button(self.root_window, text="1", width=self.settings.widget_width,
+                    command=lambda:self.show("1")).grid(row=5, column=0)
+        Button(self.root_window, text="2", width=self.settings.widget_width,
+                     command=lambda:self.show("2")).grid(row=5, column=1)
+        Button(self.root_window, text="3", width=self.settings.widget_width,
+                    command=lambda:self.show("3")).grid(row=5, column=2)
+        Button(self.root_window, text="+", width=self.settings.widget_width,
+                    command=lambda:self.show("+")).grid(row=5, column=3)
 
-#     # Step2 create the widges and set them property
-#     result = StringVar()
-#     result.set("2")
-#     cal_result_and_button(cal_root_win, result)
+        # row = 6
+        Button(self.root_window, text="+/-", width=self.settings.widget_width,
+                     command=self.pos_neg).grid(row=6, column=0)
+        Button(self.root_window, text="0", width=self.settings.widget_width,
+                    command=lambda:self.show("0")).grid(row=6, column=1)
+        Button(self.root_window, text=".", width=self.settings.widget_width,
+                    command=lambda:self.show(".")).grid(row=6, column=2)
+        Button(self.root_window, text="=", width=self.settings.widget_width,
+                    command=self.calculate).grid(row=6, column=3)
 
-#     # Step3 the tkinter main loop, wait for keyevent and so on
-#     cal_root_win.mainloop()
+    def run_main(self):
+        ''' The main function of calculator '''
+
+        # Step2 create the widges and set them property
+        self.cal_result_and_button()
+
+        # Step3 the tkinter main loop, wait for keyevent and so on
+        self.root_window.mainloop()
 
 
 # Into main function
-# if __name__ == '__main__':
-#     run_main()
+if __name__ == '__main__':
+    calculator = Calculator()
+    calculator.run_main()
