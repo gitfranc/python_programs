@@ -5,12 +5,12 @@
 # @File: calculator.py
 # @Date: 2021-12-30 21:57:59
 # @Last Modified by: franc
-# @Last Modified time: 2022-01-01 00:45:24
+# @Last Modified time: 2022-01-01 01:03:00
 # @Project: calculator
 # @Use: The main function of Calculator
 
 from tkinter import Tk
-from tkinter import Label, Button
+from tkinter import Label, Button, messagebox
 from tkinter import StringVar
 from tkinter.font import Font
 import math
@@ -39,6 +39,8 @@ class Calculator:
                 self.settings.win_height)
         self.root_window.minsize(self.settings.win_width,
                 self.settings.win_height)
+        # set the icon for the window
+        self.root_window.iconbitmap("images/win.ico")
 
         self.record = StringVar()
         self.record.set("0")
@@ -71,7 +73,8 @@ class Calculator:
         try:
             res = eval("1"+"/" + self.record.get())
         except Exception:
-            print("illegal operation, Please check you input")
+            messagebox.showwarning("Warning",
+                    "illegal operation, Please check your input")
         else:
             self.record.set(str(res))
 
@@ -80,7 +83,8 @@ class Calculator:
         try:
              res = eval(self.record.get() + "**" + "2")
         except Exception:
-            print("illegal operation, Please check you input")
+            messagebox.showwarning("Warning",
+                    "illegal operation, Please check your input")
         else:
             self.result.set(str(res))
 
@@ -88,7 +92,8 @@ class Calculator:
         try:
             res = math.sqrt(int(self.record.get()))
         except Exception:
-            print("illegal operation, Please check you input")
+            messagebox.showwarning("Warning",
+                    "illegal operation, Please check your input")
         else:
             self.record.set(str(res))
 
@@ -96,7 +101,8 @@ class Calculator:
         try:
             res = eval(self.record.get())
         except Exception:
-            print("illegal operation, Please check you input")
+            messagebox.showwarning("Warning",
+                    "illegal operation, Please check your input")
         else:
             self.result.set(str(res))
 
@@ -104,7 +110,8 @@ class Calculator:
         try:
             res = eval(self.record.get())
         except Exception:
-            print("illegal operation, Please check you input")
+            messagebox.showwarning("Warning",
+                    "illegal operation, Please check your input")
         else:
             if res >= 0:
                 self.record.set("-"+ self.record.get())
