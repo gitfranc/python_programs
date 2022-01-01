@@ -5,7 +5,7 @@
 # @File: calculator.py
 # @Date: 2021-12-30 21:57:59
 # @Last Modified by: franc
-# @Last Modified time: 2022-01-01 01:03:00
+# @Last Modified time: 2022-01-02 00:55:23
 # @Project: calculator
 # @Use: The main function of Calculator
 
@@ -13,9 +13,11 @@ from tkinter import Tk
 from tkinter import Label, Button, messagebox
 from tkinter import StringVar
 from tkinter.font import Font
-import math
+import os, sys, math
 
 from settings import Settings
+
+
 
 
 class Calculator:
@@ -39,13 +41,22 @@ class Calculator:
                 self.settings.win_height)
         self.root_window.minsize(self.settings.win_width,
                 self.settings.win_height)
-        # set the icon for the window
-        self.root_window.iconbitmap("images/win.ico")
+        #set the icon for the window
+        self.root_window.iconbitmap(self._resource_path("images/win.ico"))
+
 
         self.record = StringVar()
         self.record.set("0")
         self.result = StringVar()
         self.result.set("")
+
+
+    def _resource_path(self, relative_path):
+        if getattr(sys, 'frozen', False):
+            base_path = sys._MEIPASS
+        else:
+            base_path = os.path.abspath(".")
+        return os.path.join(base_path, relative_path)
 
 
 
