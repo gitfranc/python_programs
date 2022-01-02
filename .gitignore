@@ -3,4 +3,5 @@
 *.spec
 **/ll_env/*
 **/build/*
+**/dist/*
 
