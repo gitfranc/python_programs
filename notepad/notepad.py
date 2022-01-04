@@ -5,24 +5,30 @@
 # @File: notepad.py
 # @Date: 2022-01-03 11:28:55
 # @Last Modified by: franc
-# @Last Modified time: 2022-01-04 01:14:11
+# @Last Modified time: 2022-01-04 13:41:57
 # @Project: python_programs
 # @Use: The main function of Notepad
 
-from os.path import basename
+import os
 from tkinter import Tk
 from tkinter import filedialog, messagebox, Menu, Frame, PhotoImage, Text
+from tkinter import Toplevel, Entry
 from tkinter.ttk import Scrollbar, Checkbutton, Label, Button
-from tkinter import IntVar, END
+from tkinter import IntVar, END, StringVar
 from PIL import Image, ImageTk
 
-import os
+
 
 class NotePad(Tk):
 
     # Self var of icons
     icons = ["new_file", "open_file", "save", "cut", "copy", "paste",
              "undo", "redo", "find"]
+
+    theme_colors = {
+        "Default": "#000000.#FFFFFF",
+        "Night": "#FFFFFF.#000000",
+        }
     # The all res of icons
     icon_res = []
 
@@ -95,7 +101,7 @@ class NotePad(Tk):
                 command=lambda: self.handle_menu_action("paste"))
         edit_menu.add_separator()
         edit_menu.add_command(label="Find", accelerator="Ctrl+F",
-                command='')
+                command=self.search_text_dialog)
         edit_menu.add_separator()
         edit_menu.add_command(label="Select All", accelerator="Ctrl+A",
             command=self.select_all)
@@ -108,24 +114,33 @@ class NotePad(Tk):
         self.is_show_line_num = IntVar()
         self.is_show_line_num.set(1)
         view_menu.add_checkbutton(label="Line Number", onvalue=0, offvalue=1,
-                variable=self.is_show_line_num, command="")
+                variable=self.is_show_line_num, command=self.update_line_num)
         # HeighLight
-        self.is_heighlight_line = IntVar()
-        self.is_heighlight_line.set(0)
-        view_menu.add_checkbutton(label="HeighLight", onvalue=0, offvalue=1,
-                variable=self.is_show_line_num, command="")
+        self.is_highlight_line = IntVar()
+        self.is_highlight_line.set(1)
+        view_menu.add_checkbutton(label="HighLight", onvalue=0, offvalue=1,
+                variable=self.is_highlight_line, command=self.troggle_line_highlight)
         view_menu.add_separator()
+
+
         # Theme
+
         themes_menu = Menu(menu_bar, tearoff=0)
-        themes_menu.add_command(label="theme1", command="")
-        themes_menu.add_command(label="theme2", command="")
+        self.theme_choice = StringVar()
+        self.theme_choice.set("Default")
+
+        for key in sorted(self.theme_colors):
+            themes_menu.add_radiobutton(label=key, variable=self.theme_choice,
+                    command=self.change_theme)
         view_menu.add_cascade(label="themes", menu=themes_menu)
 
          # Add the About sub menu
         about_menu = Menu(menu_bar,tearoff=0)
         menu_bar.add_cascade(label="About", menu=about_menu)
-        about_menu.add_command(label="About", command="")
-        about_menu.add_command(label="Help", command="")
+        about_menu.add_command(label="About", command=
+                lambda:self.show_message("about"))
+        about_menu.add_command(label="Help", command=
+                lambda:self.show_message("help"))
 
         # Point to menu bar
         # self["menu"] = menu_bar
@@ -159,6 +174,7 @@ class NotePad(Tk):
         self.context_text.bind("<Shift-Control-s>",self.save_as_file)
         self.context_text.bind("<Shift-Control-S>",self.save_as_file)
         self.context_text.bind("<Alt-F4>",self.exit_notepad)
+        self.context_text.bind("<Any-KeyPress>", lambda e:self.update_line_num())
 
     def create_body_view(self):
         ''' create the main body of view. The three views of the rings, which
@@ -177,7 +193,7 @@ class NotePad(Tk):
         # Hot key bind
         self._hot_key_bind()
 
-        # Set the area of input text
+        # Set the current line tag
         self.context_text.tag_config("active_line", background="#EEEEE0")
 
 
@@ -293,6 +309,8 @@ class NotePad(Tk):
                 self.new_file()
             elif action_type == "save":
                 self.save_file()
+            elif action_type == "find":
+                self.search_text_dialog()
             else:
                 self.handle_menu_action(action_type)
         # Retun the handle
@@ -302,6 +320,120 @@ class NotePad(Tk):
         ''' Select the all text '''
         self.context_text.tag_add("sel", 1.0, END)
         return "break"
+
+
+    def update_line_num(self):
+        ''' Display the line number '''
+        if self.is_show_line_num.get():
+            # Get the row and column for all context
+            row, col = self.context_text.index(END).split(".")
+            # Insert the "\n" every line
+            line_num_content = "\n".join(str(i) for i in range(1, int(row)))
+            self.line_number_bar.config(state="normal")
+            self.line_number_bar.delete(1.0, END)
+            self.line_number_bar.insert(1.0, line_num_content)
+            self.line_number_bar.config(state="disable")
+        else:
+            self.line_number_bar.config(state="normal")
+            self.line_number_bar.delete(1.0, END)
+            self.line_number_bar.config(state="disable")
+
+
+    def troggle_line_highlight(self):
+        ''' Hightlight tht current line '''
+        print("troggle_line_highlight")
+        if self.is_highlight_line.get():
+            print("display highline")
+            self.context_text.tag_remove("active_line", 1.0, END)
+            self.context_text.tag_add("active_line", "insert linestart",
+                    "insert lineend+1c")
+            self.context_text.after(200, self.troggle_line_highlight)
+        else:
+            print("disable highline")
+            self.context_text.tag_remove("active_line", 1.0, END)
+
+
+    def search_text_dialog(self):
+        ''' Create the search dialog '''
+
+        search_dialog = Toplevel(self)
+        search_dialog.title("Search text")
+        max_width, max_height = self.maxsize()
+        align_center = "350x80+%d+%d" % ((max_width - 350) / 2,
+                (max_height - 80) / 2)
+        search_dialog.geometry(align_center)
+        # search_dialog.resizable(False, False)
+
+        Label(search_dialog, text="Search All").grid(row=0, column=0, sticky="e")
+        search_text = Entry(search_dialog, width=25)
+        search_text.grid(row=0, column=1, padx=2, pady=2, sticky="we")
+        search_text.focus_set()
+
+        # Ignore the case
+        ignore_case_value = IntVar()
+        Checkbutton(search_dialog, text="Ignore Case",variable=ignore_case_value,
+            ).grid(row=1, column=1,sticky="we", padx=2, pady=2)
+
+        Button(search_dialog, text="Find", command=lambda:self.search_text_result(
+                search_text.get(), ignore_case_value.get(), search_dialog,
+                search_text)).grid(row=0, column=2,sticky="we", padx=2)
+
+        def close_search_dialog():
+            self.context_text.tag_remove("match", 1.0, END)
+            search_dialog.destroy()
+
+        search_dialog.protocol("WM_DELETE_WINDOW", close_search_dialog)
+
+        return "break"
+
+    def search_text_result(self, key, ignore_case, search_dialog, search_text):
+        ''' Search text by word an word '''
+
+        self.context_text.tag_remove("match", 1.0, END)
+        matches_found = 0
+        if key:
+            start_pos = 1.0
+            while True:
+                start_pos = self.context_text.search(key, start_pos,
+                        nocase=ignore_case, stopindex=END)
+                if not start_pos:
+                    break
+                end_pos = "{}+{}c".format(start_pos, len(key))
+                self.context_text.tag_add("match", start_pos, end_pos)
+                matches_found += 1
+                start_pos = end_pos
+
+            self.context_text.tag_config("match", foreground="red",
+                    background="yellow")
+            search_text.focus_set()
+            search_dialog.title("Find %d matches " % matches_found)
+
+
+    def change_theme(self):
+        ''' Change the theme '''
+
+        selected_theme = self.theme_choice.get()
+        fg_bg = self.theme_colors[selected_theme]
+
+        print(fg_bg)
+
+        fg_color, bg_color = fg_bg.split(".")
+
+        print(fg_color)
+
+        self.context_text.config(fg=fg_color, bg=bg_color)
+
+    def show_message(self, type):
+        ''' About and Help display a message box '''
+
+        if type == "about":
+            messagebox.showinfo("About", "This is a sample notepad!")
+        else:
+            messagebox.showinfo("Help", "This is a help words", icon="question")
+
+
+
+
 
 
 
