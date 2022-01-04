@@ -1,6 +1,6 @@
 ##!/usr/bin/python3
 # -*- coding: utf-8 -*-
-# @Author: caifeiliu
+# @Author: franc
 # @Email: caifei521@163.com
 # @File: notepad.py
 # @Date: 2022-01-03 11:28:55
@@ -11,7 +11,7 @@
 
 import os
 from tkinter import Tk
-from tkinter import filedialog, messagebox, Menu, Frame, PhotoImage, Text
+from tkinter import filedialog, messagebox, Menu, Frame, Text
 from tkinter import Toplevel, Entry
 from tkinter.ttk import Scrollbar, Checkbutton, Label, Button
 from tkinter import IntVar, END, StringVar
@@ -31,37 +31,32 @@ class NotePad(Tk):
     icon_res = []
 
     def __init__(self):
-        ''' Initialize the notepad '''
+        """ Initialize the notepad """
         super().__init__()
-
+        self.context_text = None
+        self.line_number_bar = None
         self.file_name = None
+        self.is_show_line_num = IntVar()
+        self.is_show_line_num.set(1)
 
+        self.is_highlight_line = IntVar()
+        self.is_highlight_line.set(1)
+        self.theme_choice = StringVar()
+        self.theme_choice.set("Default")
         # Set the window
         self.set_window()
 
-        # Create the menu bar
-        self.create_menu_bar()
-
-        # Create the tool bar
-        self.create_tool_bar()
-
-        # Create the main body of view
-        self.create_body_view()
-
-        # Create pop menu for edit
-        self.create_pop_menu()
-
     def set_window(self):
-        ''' Set the window '''
+        """ Set the window """
         self.title("NotePad")
         max_width, max_height = self.maxsize()
         align_center = "800x600+%d+%d" % (
-        (max_width - 800) / 2, (max_height - 600) / 2)
+            (max_width - 800) / 2, (max_height - 600) / 2)
         self.geometry(align_center)
         self.iconbitmap("images/win.ico")
 
     def create_menu_bar(self):
-        ''' Create the menu'''
+        """ Create the menu"""
 
         # Create the root menu
         menu_bar = Menu(self)
@@ -106,14 +101,10 @@ class NotePad(Tk):
         view_menu = Menu(menu_bar, tearoff=0)
         menu_bar.add_cascade(label="View", menu=view_menu)
         # Line Number
-        self.is_show_line_num = IntVar()
-        self.is_show_line_num.set(1)
         view_menu.add_checkbutton(label="Line Number", onvalue=0, offvalue=1,
                                   variable=self.is_show_line_num,
                                   command=self.update_line_num)
-        # HeighLight
-        self.is_highlight_line = IntVar()
-        self.is_highlight_line.set(1)
+        # HighLight
         view_menu.add_checkbutton(label="HighLight", onvalue=0, offvalue=1,
                                   variable=self.is_highlight_line,
                                   command=self.troggle_line_highlight)
@@ -122,9 +113,6 @@ class NotePad(Tk):
         # Theme
 
         themes_menu = Menu(menu_bar, tearoff=0)
-        self.theme_choice = StringVar()
-        self.theme_choice.set("Default")
-
         for key in sorted(self.theme_colors):
             themes_menu.add_radiobutton(label=key, variable=self.theme_choice,
                                         command=self.change_theme)
@@ -133,17 +121,17 @@ class NotePad(Tk):
         # Add the About sub menu
         about_menu = Menu(menu_bar, tearoff=0)
         menu_bar.add_cascade(label="About", menu=about_menu)
-        about_menu.add_command(label="About", command=
-        lambda: self.show_message("about"))
-        about_menu.add_command(label="Help", command=
-        lambda: self.show_message("help"))
+        about_menu.add_command(label="About",
+                               command=lambda: self.show_message("about"))
+        about_menu.add_command(label="Help",
+                               command=lambda: self.show_message("help"))
 
         # Point to menu bar
         # self["menu"] = menu_bar
         self.config(menu=menu_bar)
 
     def create_tool_bar(self):
-        ''' Create the tool bar '''
+        """ Create the toolbar """
 
         # Create the window container of Frame
         tool_bar = Frame(self, height=15, background="white")
@@ -159,7 +147,7 @@ class NotePad(Tk):
             self.icon_res.append(tool_icon)
 
     def _hot_key_bind(self):
-        ''' Hot key bind for notepad file '''
+        """ Hot key bind for notepad file """
         self.context_text.bind("<Control-o>", self.open_file)
         self.context_text.bind("<Control-O>", self.open_file)
         self.context_text.bind("<Control-s>", self.save_file)
@@ -173,9 +161,9 @@ class NotePad(Tk):
                                lambda e: self.update_line_num())
 
     def create_body_view(self):
-        ''' create the main body of view. The three views of the rings, which
+        """ create the main body of view. The three views of the rings, which
         always appear in the same order, are, left to right: Line number,
-        edit context and scroll bar '''
+        edit context and scroll bar """
 
         # Display the number of line
         self.line_number_bar = Text(self, width=4, padx=3, takefocus=0,
@@ -203,7 +191,7 @@ class NotePad(Tk):
         scroll_bar.pack(side="right", fill="y")
 
     def open_file(self, event=None):
-        '''Open file function '''
+        """Open file function """
 
         # Open file and set the type of file
         input_file = filedialog.askopenfilename(
@@ -217,7 +205,7 @@ class NotePad(Tk):
                 self.context_text.insert(1.0, _file.read())
 
     def write_file(self, file_name):
-        ''' Write file to disk'''
+        """ Write file to disk"""
 
         try:
             content = self.context_text.get(1.0, END)
@@ -228,7 +216,7 @@ class NotePad(Tk):
             messagebox.showerror("Error", "File save error")
 
     def save_file(self, event=None):
-        ''' Save the file to disk '''
+        """ Save the file to disk """
 
         # when self.file_name is None, write file error
         if not self.file_name:
@@ -237,14 +225,14 @@ class NotePad(Tk):
             self.write_file(self.file_name)
 
     def new_file(self, event=None):
-        ''' Create new file '''
+        """ Create new file """
 
         self.title("New file---NotePad")
         self.context_text.delete(1.0, END)
         self.file_name = None
 
     def save_as_file(self, event=None):
-        ''' Save file as other disk'''
+        """ Save file as other disk """
         input_file = filedialog.asksaveasfilename(
             filetypes=[("All types", "*.*"), ("Normal text file", "*.txt")]
         )
@@ -254,14 +242,14 @@ class NotePad(Tk):
             self.write_file(self.file_name)
 
     def exit_notepad(self, event=None):
-        ''' Exit the notepad '''
+        """ Exit the notepad """
 
         # if click ok , exit notepad
         if messagebox.askokcancel("Exit", "Are you sure you need to quit?"):
             self.destroy()
 
     def create_pop_menu(self):
-        ''' Create the pop menu '''
+        """ Create the pop menu """
 
         eidit_pop_lists = ["cut", "copy", "paste", "undo", "redo"]
         pop_menu = Menu(self.context_text, tearoff=0)
@@ -276,7 +264,7 @@ class NotePad(Tk):
             event.x_root, event.y_root))
 
     def handle_menu_action(self, action_type):
-        ''' Pop menu action '''
+        """ Pop menu action """
         if action_type == "cut":
             self.context_text.event_generate("<<Cut>>")
         elif action_type == "copy":
@@ -291,7 +279,7 @@ class NotePad(Tk):
         return "break"
 
     def tool_bar_action(self, action_type):
-        ''' Create action bar'''
+        """ Create action bar """
 
         def handle():
             if action_type == "open_file":
@@ -305,16 +293,16 @@ class NotePad(Tk):
             else:
                 self.handle_menu_action(action_type)
 
-        # Retun the handle
+        # Return the handle
         return handle
 
     def select_all(self):
-        ''' Select the all text '''
+        """ Select the all text """
         self.context_text.tag_add("sel", 1.0, END)
         return "break"
 
     def update_line_num(self):
-        ''' Display the line number '''
+        """ Display the line number """
         if self.is_show_line_num.get():
             # Get the row and column for all context
             row, col = self.context_text.index(END).split(".")
@@ -330,20 +318,17 @@ class NotePad(Tk):
             self.line_number_bar.config(state="disable")
 
     def troggle_line_highlight(self):
-        ''' Hightlight tht current line '''
-        print("troggle_line_highlight")
+        """ Highlight tht current line """
         if self.is_highlight_line.get():
-            print("display highline")
             self.context_text.tag_remove("active_line", 1.0, END)
             self.context_text.tag_add("active_line", "insert linestart",
                                       "insert lineend+1c")
             self.context_text.after(200, self.troggle_line_highlight)
         else:
-            print("disable highline")
             self.context_text.tag_remove("active_line", 1.0, END)
 
     def search_text_dialog(self):
-        ''' Create the search dialog '''
+        """ Create the search dialog """
 
         search_dialog = Toplevel(self)
         search_dialog.title("Search text")
@@ -379,7 +364,7 @@ class NotePad(Tk):
         return "break"
 
     def search_text_result(self, key, ignore_case, search_dialog, search_text):
-        ''' Search text by word an word '''
+        """ Search text by word an word """
 
         self.context_text.tag_remove("match", 1.0, END)
         matches_found = 0
@@ -402,7 +387,7 @@ class NotePad(Tk):
             search_dialog.title("Find %d matches " % matches_found)
 
     def change_theme(self):
-        ''' Change the theme '''
+        """ Change the theme """
 
         selected_theme = self.theme_choice.get()
         fg_bg = self.theme_colors[selected_theme]
@@ -415,17 +400,32 @@ class NotePad(Tk):
 
         self.context_text.config(fg=fg_color, bg=bg_color)
 
-    def show_message(self, type):
-        ''' About and Help display a message box '''
+    def show_message(self, item_type):
+        """ About and Help display a message box """
 
-        if type == "about":
+        if item_type == "about":
             messagebox.showinfo("About", "This is a sample notepad!")
         else:
             messagebox.showinfo("Help", "This is a help words", icon="question")
+
+    def notepad_main(self):
+        """ Main loop for notepad """
+
+        # Create main view for notepad
+        # Create the menu bar
+        self.create_menu_bar()
+        # Create the toolbar
+        self.create_tool_bar()
+        # Create the main body of view
+        self.create_body_view()
+        # Create pop menu for edit
+        self.create_pop_menu()
+
+        # Call mainloop for notepad
+        self.mainloop()
 
 
 if __name__ == '__main__':
     # Create the notepad
     notepad = NotePad()
-    # Call mainloop for notepad
-    notepad.mainloop()
+    notepad.notepad_main()
