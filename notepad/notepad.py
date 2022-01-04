@@ -5,7 +5,7 @@
 # @File: notepad.py
 # @Date: 2022-01-03 11:28:55
 # @Last Modified by: franc
-# @Last Modified time: 2022-01-04 13:41:57
+# @Last Modified time: 2022-01-04 23:13:51
 # @Project: python_programs
 # @Use: The main function of Notepad
 
@@ -18,9 +18,7 @@ from tkinter import IntVar, END, StringVar
 from PIL import Image, ImageTk
 
 
-
 class NotePad(Tk):
-
     # Self var of icons
     icons = ["new_file", "open_file", "save", "cut", "copy", "paste",
              "undo", "redo", "find"]
@@ -28,7 +26,7 @@ class NotePad(Tk):
     theme_colors = {
         "Default": "#000000.#FFFFFF",
         "Night": "#FFFFFF.#000000",
-        }
+    }
     # The all res of icons
     icon_res = []
 
@@ -37,7 +35,6 @@ class NotePad(Tk):
         super().__init__()
 
         self.file_name = None
-
 
         # Set the window
         self.set_window()
@@ -58,10 +55,10 @@ class NotePad(Tk):
         ''' Set the window '''
         self.title("NotePad")
         max_width, max_height = self.maxsize()
-        align_center = "800x600+%d+%d" % ((max_width-800)/2,(max_height-600)/2)
+        align_center = "800x600+%d+%d" % (
+        (max_width - 800) / 2, (max_height - 600) / 2)
         self.geometry(align_center)
         self.iconbitmap("images/win.ico")
-
 
     def create_menu_bar(self):
         ''' Create the menu'''
@@ -73,55 +70,54 @@ class NotePad(Tk):
         file_menu = Menu(menu_bar, tearoff=0)
         menu_bar.add_cascade(label="File", menu=file_menu)
         file_menu.add_command(label="New File", accelerator="Ctrl+N",
-                command=self.new_file)
+                              command=self.new_file)
         file_menu.add_command(label="Open File", accelerator="Ctrl+O",
-                command=self.open_file)
+                              command=self.open_file)
         file_menu.add_command(label="Save", accelerator="Ctrl+S",
-                command=self.save_file)
+                              command=self.save_file)
         file_menu.add_command(label="Save As", accelerator="Shif+Ctrl+S",
-                command=self.save_as_file)
+                              command=self.save_as_file)
         file_menu.add_separator()
         file_menu.add_command(label="Exist", accelerator="Alt+F4",
-                command=self.exit_notepad)
-
+                              command=self.exit_notepad)
 
         # Add the Edit sub menu
-        edit_menu = Menu(menu_bar,tearoff=0)
+        edit_menu = Menu(menu_bar, tearoff=0)
         menu_bar.add_cascade(label="Edit", menu=edit_menu)
         edit_menu.add_command(label="Undo", accelerator="Ctrl+Z",
-                command=lambda:self.handle_menu_action("undo"))
+                              command=lambda: self.handle_menu_action("undo"))
         edit_menu.add_command(label="Redo", accelerator="Ctrl+Y",
-                command=lambda: self.handle_menu_action("redo"))
+                              command=lambda: self.handle_menu_action("redo"))
         edit_menu.add_separator()
         edit_menu.add_command(label="Cut", accelerator="Ctrl+X",
-                command=lambda: self.handle_menu_action("cut"))
+                              command=lambda: self.handle_menu_action("cut"))
         edit_menu.add_command(label="Copy", accelerator="Ctrl+C",
-                command=lambda: self.handle_menu_action("copy"))
+                              command=lambda: self.handle_menu_action("copy"))
         edit_menu.add_command(label="Paste", accelerator="Ctrl+V",
-                command=lambda: self.handle_menu_action("paste"))
+                              command=lambda: self.handle_menu_action("paste"))
         edit_menu.add_separator()
         edit_menu.add_command(label="Find", accelerator="Ctrl+F",
-                command=self.search_text_dialog)
+                              command=self.search_text_dialog)
         edit_menu.add_separator()
         edit_menu.add_command(label="Select All", accelerator="Ctrl+A",
-            command=self.select_all)
+                              command=self.select_all)
 
-
-         # Add the View sub menu
-        view_menu = Menu(menu_bar,tearoff=0)
+        # Add the View sub menu
+        view_menu = Menu(menu_bar, tearoff=0)
         menu_bar.add_cascade(label="View", menu=view_menu)
         # Line Number
         self.is_show_line_num = IntVar()
         self.is_show_line_num.set(1)
         view_menu.add_checkbutton(label="Line Number", onvalue=0, offvalue=1,
-                variable=self.is_show_line_num, command=self.update_line_num)
+                                  variable=self.is_show_line_num,
+                                  command=self.update_line_num)
         # HeighLight
         self.is_highlight_line = IntVar()
         self.is_highlight_line.set(1)
         view_menu.add_checkbutton(label="HighLight", onvalue=0, offvalue=1,
-                variable=self.is_highlight_line, command=self.troggle_line_highlight)
+                                  variable=self.is_highlight_line,
+                                  command=self.troggle_line_highlight)
         view_menu.add_separator()
-
 
         # Theme
 
@@ -131,21 +127,20 @@ class NotePad(Tk):
 
         for key in sorted(self.theme_colors):
             themes_menu.add_radiobutton(label=key, variable=self.theme_choice,
-                    command=self.change_theme)
+                                        command=self.change_theme)
         view_menu.add_cascade(label="themes", menu=themes_menu)
 
-         # Add the About sub menu
-        about_menu = Menu(menu_bar,tearoff=0)
+        # Add the About sub menu
+        about_menu = Menu(menu_bar, tearoff=0)
         menu_bar.add_cascade(label="About", menu=about_menu)
         about_menu.add_command(label="About", command=
-                lambda:self.show_message("about"))
+        lambda: self.show_message("about"))
         about_menu.add_command(label="Help", command=
-                lambda:self.show_message("help"))
+        lambda: self.show_message("help"))
 
         # Point to menu bar
         # self["menu"] = menu_bar
         self.config(menu=menu_bar)
-
 
     def create_tool_bar(self):
         ''' Create the tool bar '''
@@ -156,25 +151,26 @@ class NotePad(Tk):
 
         # Initialize the image and Button
         for icon in self.icons:
-            image = Image.open("images/%s.gif" % (icon, ))
+            image = Image.open("images/%s.gif" % (icon,))
             tool_icon = ImageTk.PhotoImage(image)
             tool_btn = Button(tool_bar, image=tool_icon,
-                command=self.tool_bar_action(icon))
+                              command=self.tool_bar_action(icon))
             tool_btn.pack(side="left")
             self.icon_res.append(tool_icon)
 
     def _hot_key_bind(self):
         ''' Hot key bind for notepad file '''
-        self.context_text.bind("<Control-o>",self.open_file)
-        self.context_text.bind("<Control-O>",self.open_file)
-        self.context_text.bind("<Control-s>",self.save_file)
-        self.context_text.bind("<Control-S>",self.save_file)
-        self.context_text.bind("<Control-n>",self.new_file)
-        self.context_text.bind("<Control-N>",self.new_file)
-        self.context_text.bind("<Shift-Control-s>",self.save_as_file)
-        self.context_text.bind("<Shift-Control-S>",self.save_as_file)
-        self.context_text.bind("<Alt-F4>",self.exit_notepad)
-        self.context_text.bind("<Any-KeyPress>", lambda e:self.update_line_num())
+        self.context_text.bind("<Control-o>", self.open_file)
+        self.context_text.bind("<Control-O>", self.open_file)
+        self.context_text.bind("<Control-s>", self.save_file)
+        self.context_text.bind("<Control-S>", self.save_file)
+        self.context_text.bind("<Control-n>", self.new_file)
+        self.context_text.bind("<Control-N>", self.new_file)
+        self.context_text.bind("<Shift-Control-s>", self.save_as_file)
+        self.context_text.bind("<Shift-Control-S>", self.save_as_file)
+        self.context_text.bind("<Alt-F4>", self.exit_notepad)
+        self.context_text.bind("<Any-KeyPress>",
+                               lambda e: self.update_line_num())
 
     def create_body_view(self):
         ''' create the main body of view. The three views of the rings, which
@@ -183,7 +179,7 @@ class NotePad(Tk):
 
         # Display the number of line
         self.line_number_bar = Text(self, width=4, padx=3, takefocus=0,
-                bd=0, background="#F0E68C",state="disable")
+                                    bd=0, background="#F0E68C", state="disable")
         self.line_number_bar.pack(side="left", fill="y")
 
         # Display the edit of context
@@ -195,7 +191,6 @@ class NotePad(Tk):
 
         # Set the current line tag
         self.context_text.tag_config("active_line", background="#EEEEE0")
-
 
         # Display the scroll bar
         scroll_bar = Scrollbar(self.context_text)
@@ -212,8 +207,8 @@ class NotePad(Tk):
 
         # Open file and set the type of file
         input_file = filedialog.askopenfilename(
-            filetypes=[("All types","*.*"), ("Normal text file", "*.txt")]
-            )
+            filetypes=[("All types", "*.*"), ("Normal text file", "*.txt")]
+        )
         if input_file:
             self.title("{}***Notepad".format(os.path.basename(input_file)))
             self.file_name = input_file
@@ -241,8 +236,6 @@ class NotePad(Tk):
         else:
             self.write_file(self.file_name)
 
-
-
     def new_file(self, event=None):
         ''' Create new file '''
 
@@ -250,12 +243,11 @@ class NotePad(Tk):
         self.context_text.delete(1.0, END)
         self.file_name = None
 
-
     def save_as_file(self, event=None):
         ''' Save file as other disk'''
         input_file = filedialog.asksaveasfilename(
-            filetypes=[("All types","*.*"), ("Normal text file", "*.txt")]
-            )
+            filetypes=[("All types", "*.*"), ("Normal text file", "*.txt")]
+        )
 
         if input_file:
             self.file_name = input_file
@@ -275,14 +267,13 @@ class NotePad(Tk):
         pop_menu = Menu(self.context_text, tearoff=0)
         for item in eidit_pop_lists:
             pop_menu.add_command(label=item, compound="left",
-                command=self.tool_bar_action(item))
+                                 command=self.tool_bar_action(item))
         pop_menu.add_separator()
         pop_menu.add_command(label="Select all", command=self.select_all)
 
         # Bind
-        self.context_text.bind("<Button-3>", lambda event:pop_menu.tk_popup(
-                event.x_root, event.y_root))
-
+        self.context_text.bind("<Button-3>", lambda event: pop_menu.tk_popup(
+            event.x_root, event.y_root))
 
     def handle_menu_action(self, action_type):
         ''' Pop menu action '''
@@ -299,13 +290,13 @@ class NotePad(Tk):
 
         return "break"
 
-
     def tool_bar_action(self, action_type):
         ''' Create action bar'''
+
         def handle():
             if action_type == "open_file":
                 self.open_file()
-            elif action_type == "new_file" :
+            elif action_type == "new_file":
                 self.new_file()
             elif action_type == "save":
                 self.save_file()
@@ -313,6 +304,7 @@ class NotePad(Tk):
                 self.search_text_dialog()
             else:
                 self.handle_menu_action(action_type)
+
         # Retun the handle
         return handle
 
@@ -320,7 +312,6 @@ class NotePad(Tk):
         ''' Select the all text '''
         self.context_text.tag_add("sel", 1.0, END)
         return "break"
-
 
     def update_line_num(self):
         ''' Display the line number '''
@@ -338,7 +329,6 @@ class NotePad(Tk):
             self.line_number_bar.delete(1.0, END)
             self.line_number_bar.config(state="disable")
 
-
     def troggle_line_highlight(self):
         ''' Hightlight tht current line '''
         print("troggle_line_highlight")
@@ -346,12 +336,11 @@ class NotePad(Tk):
             print("display highline")
             self.context_text.tag_remove("active_line", 1.0, END)
             self.context_text.tag_add("active_line", "insert linestart",
-                    "insert lineend+1c")
+                                      "insert lineend+1c")
             self.context_text.after(200, self.troggle_line_highlight)
         else:
             print("disable highline")
             self.context_text.tag_remove("active_line", 1.0, END)
-
 
     def search_text_dialog(self):
         ''' Create the search dialog '''
@@ -360,23 +349,26 @@ class NotePad(Tk):
         search_dialog.title("Search text")
         max_width, max_height = self.maxsize()
         align_center = "350x80+%d+%d" % ((max_width - 350) / 2,
-                (max_height - 80) / 2)
+                                         (max_height - 80) / 2)
         search_dialog.geometry(align_center)
         # search_dialog.resizable(False, False)
 
-        Label(search_dialog, text="Search All").grid(row=0, column=0, sticky="e")
+        Label(search_dialog, text="Search All").grid(row=0, column=0,
+                                                     sticky="e")
         search_text = Entry(search_dialog, width=25)
         search_text.grid(row=0, column=1, padx=2, pady=2, sticky="we")
         search_text.focus_set()
 
         # Ignore the case
         ignore_case_value = IntVar()
-        Checkbutton(search_dialog, text="Ignore Case",variable=ignore_case_value,
-            ).grid(row=1, column=1,sticky="we", padx=2, pady=2)
+        Checkbutton(search_dialog, text="Ignore Case",
+                    variable=ignore_case_value,
+                    ).grid(row=1, column=1, sticky="we", padx=2, pady=2)
 
-        Button(search_dialog, text="Find", command=lambda:self.search_text_result(
-                search_text.get(), ignore_case_value.get(), search_dialog,
-                search_text)).grid(row=0, column=2,sticky="we", padx=2)
+        Button(search_dialog, text="Find",
+               command=lambda: self.search_text_result(
+                   search_text.get(), ignore_case_value.get(), search_dialog,
+                   search_text)).grid(row=0, column=2, sticky="we", padx=2)
 
         def close_search_dialog():
             self.context_text.tag_remove("match", 1.0, END)
@@ -395,7 +387,8 @@ class NotePad(Tk):
             start_pos = 1.0
             while True:
                 start_pos = self.context_text.search(key, start_pos,
-                        nocase=ignore_case, stopindex=END)
+                                                     nocase=ignore_case,
+                                                     stopindex=END)
                 if not start_pos:
                     break
                 end_pos = "{}+{}c".format(start_pos, len(key))
@@ -404,10 +397,9 @@ class NotePad(Tk):
                 start_pos = end_pos
 
             self.context_text.tag_config("match", foreground="red",
-                    background="yellow")
+                                         background="yellow")
             search_text.focus_set()
             search_dialog.title("Find %d matches " % matches_found)
-
 
     def change_theme(self):
         ''' Change the theme '''
@@ -432,18 +424,8 @@ class NotePad(Tk):
             messagebox.showinfo("Help", "This is a help words", icon="question")
 
 
-
-
-
-
-
-
-
-
 if __name__ == '__main__':
     # Create the notepad
     notepad = NotePad()
     # Call mainloop for notepad
     notepad.mainloop()
-
-
