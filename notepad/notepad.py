@@ -17,22 +17,17 @@ from tkinter.ttk import Scrollbar, Checkbutton, Label, Button
 from tkinter import IntVar, END, StringVar
 from PIL import Image, ImageTk
 
+from settings import  Settings
+
 
 class NotePad(Tk):
-    # Self var of icons
-    icons = ["new_file", "open_file", "save", "cut", "copy", "paste",
-             "undo", "redo", "find"]
-
-    theme_colors = {
-        "Default": "#000000.#FFFFFF",
-        "Night": "#FFFFFF.#000000",
-    }
-    # The all res of icons
-    icon_res = []
 
     def __init__(self):
         """ Initialize the notepad """
         super().__init__()
+        self.settings = Settings()
+
+        self.icon_res = []
         self.context_text = None
         self.line_number_bar = None
         self.file_name = None
@@ -43,15 +38,24 @@ class NotePad(Tk):
         self.is_highlight_line.set(1)
         self.theme_choice = StringVar()
         self.theme_choice.set("Default")
+
         # Set the window
         self.set_window()
+
+
+    def get_center_screen(self, width, height):
+        """ Get the center of screen position """
+        # Get the max screen of width and height
+        max_width, max_height = self.maxsize()
+        align_center = "%dx%d+%d+%d" % (width,height, (max_width - width) / 2,
+                                       (max_height - height) / 2)
+        return align_center
 
     def set_window(self):
         """ Set the window """
         self.title("NotePad")
-        max_width, max_height = self.maxsize()
-        align_center = "800x600+%d+%d" % (
-            (max_width - 800) / 2, (max_height - 600) / 2)
+        align_center = self.get_center_screen(self.settings.win_width,
+                                              self.settings.win_height)
         self.geometry(align_center)
         self.iconbitmap("images/win.ico")
 
@@ -113,7 +117,7 @@ class NotePad(Tk):
         # Theme
 
         themes_menu = Menu(menu_bar, tearoff=0)
-        for key in sorted(self.theme_colors):
+        for key in sorted(self.settings.theme_colors):
             themes_menu.add_radiobutton(label=key, variable=self.theme_choice,
                                         command=self.change_theme)
         view_menu.add_cascade(label="themes", menu=themes_menu)
@@ -138,7 +142,7 @@ class NotePad(Tk):
         tool_bar.pack(fill="x")
 
         # Initialize the image and Button
-        for icon in self.icons:
+        for icon in self.settings.icons:
             image = Image.open("images/%s.gif" % (icon,))
             tool_icon = ImageTk.PhotoImage(image)
             tool_btn = Button(tool_bar, image=tool_icon,
@@ -182,9 +186,7 @@ class NotePad(Tk):
 
         # Display the scroll bar
         scroll_bar = Scrollbar(self.context_text)
-        # scrollbar and text bind
-        # scroll_bar["command"]=self.context_text.yview
-        # self.context_text["yscrollcommand"] = scroll_bar.set
+        # Scrollbar and text bind
         scroll_bar.config(command=self.context_text.yview)
         self.context_text.config(yscrollcommand=scroll_bar.set)
 
@@ -251,9 +253,9 @@ class NotePad(Tk):
     def create_pop_menu(self):
         """ Create the pop menu """
 
-        eidit_pop_lists = ["cut", "copy", "paste", "undo", "redo"]
+        edit_pop_lists = ["cut", "copy", "paste", "undo", "redo"]
         pop_menu = Menu(self.context_text, tearoff=0)
-        for item in eidit_pop_lists:
+        for item in edit_pop_lists:
             pop_menu.add_command(label=item, compound="left",
                                  command=self.tool_bar_action(item))
         pop_menu.add_separator()
@@ -333,8 +335,8 @@ class NotePad(Tk):
         search_dialog = Toplevel(self)
         search_dialog.title("Search text")
         max_width, max_height = self.maxsize()
-        align_center = "350x80+%d+%d" % ((max_width - 350) / 2,
-                                         (max_height - 80) / 2)
+        align_center = self.get_center_screen(self.settings.search_win_width,
+                                              self.settings.search_win_height)
         search_dialog.geometry(align_center)
         # search_dialog.resizable(False, False)
 
@@ -390,7 +392,7 @@ class NotePad(Tk):
         """ Change the theme """
 
         selected_theme = self.theme_choice.get()
-        fg_bg = self.theme_colors[selected_theme]
+        fg_bg = self.settings.theme_colors[selected_theme]
 
         print(fg_bg)
 
