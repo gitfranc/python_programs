@@ -42,7 +42,6 @@ class NotePad(Tk):
         # Set the window
         self.set_window()
 
-
     def get_center_screen(self, width, height):
         """ Get the center of screen position """
         # Get the max screen of width and height
