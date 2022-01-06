@@ -120,11 +120,11 @@ class NotePad(Tk):
         view_menu = Menu(menu_bar, tearoff=0)
         menu_bar.add_cascade(label="View", menu=view_menu)
         # Line Number
-        view_menu.add_checkbutton(label="Line Number", onvalue=0, offvalue=1,
+        view_menu.add_checkbutton(label="Line Number", onvalue=1, offvalue=0,
                                   variable=self.is_show_line_num,
                                   command=self.update_line_num)
         # HighLight
-        view_menu.add_checkbutton(label="HighLight", onvalue=0, offvalue=1,
+        view_menu.add_checkbutton(label="HighLight", onvalue=1, offvalue=0,
                                   variable=self.is_highlight_line,
                                   command=self.troggle_line_highlight)
         view_menu.add_separator()
@@ -176,8 +176,23 @@ class NotePad(Tk):
         self.context_text.bind("<Shift-Control-s>", self.save_as_file)
         self.context_text.bind("<Shift-Control-S>", self.save_as_file)
         self.context_text.bind("<Alt-F4>", self.exit_notepad)
-        self.context_text.bind("<Any-KeyPress>",
-                               lambda e: self.update_line_num())
+        # Mouse wheel conroll the context, line number and scroll bar as the same
+        self.context_text.bind("<MouseWheel>",lambda e: self.mouse_wheel(e))
+        self.line_number_bar.bind("<MouseWheel>",lambda e: self.mouse_wheel(e))
+        self.scroll_bar.bind("<MouseWheel>", lambda e: self.mouse_wheel(e))
+
+    def scroll_bar_command(self, *args):
+        """ Scroll bar control context and line number bar at the same """
+
+        self.context_text.yview(*args)
+        self.line_number_bar.yview(*args)
+
+    def mouse_wheel(self, event):
+        """ Mouse wheel control the line number, context and scroll bar"""
+        # When y positive is 1, and y negative is -1
+        self.line_number_bar.yview_scroll(int( -1 *(event.delta)), "units")
+        self.context_text.yview_scroll(int(  -1 * (event.delta)), "units")
+        return "break"
 
     def create_body_view(self):
         """ create the main body of view. The three views of the rings, which
@@ -186,26 +201,29 @@ class NotePad(Tk):
 
         # Display the number of line
         self.line_number_bar = Text(self, width=4, padx=3, takefocus=0,
-                                    bd=0, background="#F0E68C", state="disable")
+                                    bd=0, background="#F0E68C")
         self.line_number_bar.pack(side="left", fill="y")
 
         # Display the edit of context
         self.context_text = Text(self, wrap="word", undo=True)
         self.context_text.pack(fill="both", expand="yes")
 
-        # Hot key bind
-        self._hot_key_bind()
+
 
         # Set the current line tag
         self.context_text.tag_config("active_line", background="#EEEEE0")
 
         # Display the scroll bar
-        scroll_bar = Scrollbar(self.context_text)
+        self.scroll_bar = Scrollbar(self.context_text)
         # Scrollbar and text bind
-        scroll_bar.config(command=self.context_text.yview)
-        self.context_text.config(yscrollcommand=scroll_bar.set)
+        self.scroll_bar.config(command=self.scroll_bar_command)
+        self.context_text.config(yscrollcommand=self.scroll_bar.set)
+        # scrollbar and line number bind
+        self.line_number_bar.config(yscrollcommand=self.scroll_bar.set)
+        self.scroll_bar.pack(side="right", fill="y")
 
-        scroll_bar.pack(side="right", fill="y")
+        # Hot key bind
+        self._hot_key_bind()
 
     def open_file(self, event=None):
         """Open file function """
