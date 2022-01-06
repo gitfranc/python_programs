@@ -20,8 +20,8 @@ git remote add origin git@gitee.com:gitfranc/python_programs.git
 git push -u origin master
 
 github 
-git remote add origin git@gitee.com:gitfranc/python_programs.git
-git push -u origin master
+git remote add origin git@github.com:gitfranc/python_programs.git
+git push -u github master
 ```
 已有仓库?
 ```
@@ -30,6 +30,6 @@ git remote add origin git@gitee.com:gitfranc/python_programs.git
 git push -u origin master
 
 github
-git remote add origin git@gitee.com:gitfranc/python_programs.git
-git push -u origin master
+git remote add origin git@github.com:gitfranc/python_programs.git
+git push -u github master
 ```
