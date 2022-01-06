@@ -42,6 +42,22 @@ class NotePad(Tk):
         # Set the window
         self.set_window()
 
+        # Create Widgets for notepad
+        self.create_widgets()
+
+    def create_widgets(self):
+        """ Create the widgets for the notepad """
+
+        # Create the menu bar
+        self.create_menu_bar()
+        # Create the toolbar
+        self.create_tool_bar()
+        # Create the main body of view
+        self.create_body_view()
+        # Create pop menu for edit
+        self.create_pop_menu()
+
+
     def get_center_screen(self, width, height):
         """ Get the center of screen position """
         # Get the max screen of width and height
@@ -411,16 +427,6 @@ class NotePad(Tk):
 
     def notepad_main(self):
         """ Main loop for notepad """
-
-        # Create main view for notepad
-        # Create the menu bar
-        self.create_menu_bar()
-        # Create the toolbar
-        self.create_tool_bar()
-        # Create the main body of view
-        self.create_body_view()
-        # Create pop menu for edit
-        self.create_pop_menu()
 
         # Call mainloop for notepad
         self.mainloop()
