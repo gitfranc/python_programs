@@ -15,12 +15,21 @@ git init
 touch README.md
 git add README.md
 git commit -m "first commit"
+
+git remote add origin git@gitee.com:gitfranc/python_programs.git
+git push -u origin master
+
+github 
 git remote add origin git@gitee.com:gitfranc/python_programs.git
 git push -u origin master
 ```
 已有仓库?
 ```
 cd existing_git_repo
+git remote add origin git@gitee.com:gitfranc/python_programs.git
+git push -u origin master
+
+github
 git remote add origin git@gitee.com:gitfranc/python_programs.git
 git push -u origin master
 ```
