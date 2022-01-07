@@ -37,8 +37,14 @@ class NotePad(Tk):
 
         self.is_highlight_line = IntVar()
         self.is_highlight_line.set(1)
+
+        # theme of settings
         self.theme_choice = StringVar()
         self.theme_choice.set("Default")
+
+        # font of settings
+        self.font_choice = StringVar()
+        self.font_choice.set("Consalos")
 
         # Set the window
         self.set_window()
@@ -127,15 +133,31 @@ class NotePad(Tk):
         view_menu.add_checkbutton(label="HighLight", onvalue=1, offvalue=0,
                                   variable=self.is_highlight_line,
                                   command=self.update_line_highlight)
-        view_menu.add_separator()
+
+        # Settings
+        settings_menu = Menu(menu_bar, tearoff=0)
+
+        # font menu
+        font_menu = Menu(menu_bar, tearoff=0)
+        for key in sorted(self.settings.font_families):
+            font_menu.add_radiobutton(label=key, variable=self.font_choice,
+                                          command=self.update_font)
+        settings_menu.add_cascade(label="font", menu=font_menu)
+        settings_menu.add_separator()
 
         # Theme
-
         themes_menu = Menu(menu_bar, tearoff=0)
         for key in sorted(self.settings.theme_colors):
             themes_menu.add_radiobutton(label=key, variable=self.theme_choice,
                                         command=self.change_theme)
-        view_menu.add_cascade(label="themes", menu=themes_menu)
+        settings_menu.add_cascade(label="themes", menu=themes_menu)
+
+
+
+
+        menu_bar.add_cascade(label="Settings",menu=settings_menu)
+
+
 
         # Add the About sub menu
         about_menu = Menu(menu_bar, tearoff=0)
@@ -148,6 +170,32 @@ class NotePad(Tk):
         # Point to menu bar
         # self["menu"] = menu_bar
         self.config(menu=menu_bar)
+
+    def get_font_select(self):
+        """ Get the font select """
+        select_font = self.font_choice.get()
+        font_selected = self.settings.font_families[select_font]
+        return  font_selected
+
+    def update_line_num_font(self):
+        """ Update the line number bar font """
+
+        select_font = self.get_font_select()
+        self.line_number_bar.config(state="normal")
+        self.line_number_bar.config(font=select_font)
+        self.line_number_bar.config(state="disable")
+
+    def update_font(self):
+        """ Update the font, which line number bar and context """
+
+        # Get the select font
+        font_selected = self.get_font_select()
+        # Set the context font
+        self.context_text.config(font=font_selected)
+
+        # Set the line number bar font
+        self.update_line_num_font()
+
 
     def create_tool_bar(self):
         """ Create the toolbar """
@@ -209,7 +257,7 @@ class NotePad(Tk):
         self.line_number_bar.pack(side="left", fill="y")
 
         # Display the edit of context
-        self.context_text = Text(self, wrap="word", undo=True)
+        self.context_text = Text(self, wrap="word", undo=True, font="Consalos 10")
         self.context_text.pack(fill="both", expand=1)
 
         # Set the current line tag
@@ -354,19 +402,21 @@ class NotePad(Tk):
 
     def update_line_num(self):
         """ Display the line number """
+        # Set the line number bar state to normal
+        self.line_number_bar.config(state="normal")
+
         if self.is_show_line_num.get():
             # Get the row and column for all context
             row, col = self.context_text.index(END).split(".")
+
             # Insert the "\n" every line
             line_num_content = "\n".join(str(i) for i in range(1, int(row)))
-            self.line_number_bar.config(state="normal")
             self.line_number_bar.delete(1.0, END)
             self.line_number_bar.insert(1.0, line_num_content)
-            self.line_number_bar.config(state="disable")
         else:
-            self.line_number_bar.config(state="normal")
             self.line_number_bar.delete(1.0, END)
-            self.line_number_bar.config(state="disable")
+        # Set the line number bar state to disable
+        self.line_number_bar.config(state="disable")
 
     def update_line_highlight(self):
         """ Highlight tht current line """
@@ -442,13 +492,7 @@ class NotePad(Tk):
 
         selected_theme = self.theme_choice.get()
         fg_bg = self.settings.theme_colors[selected_theme]
-
-        print(fg_bg)
-
         fg_color, bg_color = fg_bg.split(".")
-
-        print(fg_color)
-
         self.context_text.config(fg=fg_color, bg=bg_color)
 
     def show_message(self, item_type):

@@ -20,6 +20,12 @@ class Settings:
             "Night": "#FFFFFF.#000000",
         }
 
+        self.font_families = {
+            "Consalos": "Consalos 10",
+            "Arial": "Arial 10",
+            "Courier": "Courier 10"
+        }
+
         # The settings of root window
         self.win_width = 800
         self.win_height = 600
