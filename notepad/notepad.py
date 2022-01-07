@@ -17,7 +17,7 @@ from tkinter.ttk import Scrollbar, Checkbutton, Label, Button
 from tkinter import IntVar, END, StringVar
 from PIL import Image, ImageTk
 
-from settings import  Settings
+from settings import Settings
 
 
 class NotePad(Tk):
@@ -31,6 +31,7 @@ class NotePad(Tk):
         self.context_text = None
         self.line_number_bar = None
         self.file_name = None
+        self.scroll_bar = None
         self.is_show_line_num = IntVar()
         self.is_show_line_num.set(1)
 
@@ -57,13 +58,12 @@ class NotePad(Tk):
         # Create pop menu for edit
         self.create_pop_menu()
 
-
     def get_center_screen(self, width, height):
         """ Get the center of screen position """
         # Get the max screen of width and height
         max_width, max_height = self.maxsize()
-        align_center = "%dx%d+%d+%d" % (width,height, (max_width - width) / 2,
-                                       (max_height - height) / 2)
+        align_center = "%dx%d+%d+%d" % (width, height, (max_width - width) / 2,
+                                        (max_height - height) / 2)
         return align_center
 
     def set_window(self):
@@ -126,7 +126,7 @@ class NotePad(Tk):
         # HighLight
         view_menu.add_checkbutton(label="HighLight", onvalue=1, offvalue=0,
                                   variable=self.is_highlight_line,
-                                  command=self.troggle_line_highlight)
+                                  command=self.update_line_highlight)
         view_menu.add_separator()
 
         # Theme
@@ -176,22 +176,26 @@ class NotePad(Tk):
         self.context_text.bind("<Shift-Control-s>", self.save_as_file)
         self.context_text.bind("<Shift-Control-S>", self.save_as_file)
         self.context_text.bind("<Alt-F4>", self.exit_notepad)
-        # Mouse wheel conroll the context, line number and scroll bar as the same
-        self.context_text.bind("<MouseWheel>",lambda e: self.mouse_wheel(e))
-        self.line_number_bar.bind("<MouseWheel>",lambda e: self.mouse_wheel(e))
+        # Update line num when any key input
+        self.context_text.bind("<Any-KeyPress>", lambda e:self.update_line_num())
+
+        # Mouse wheel control the context, line num and scroll bar as the same
+        self.context_text.bind("<MouseWheel>", lambda e: self.mouse_wheel(e))
+        self.line_number_bar.bind("<MouseWheel>", lambda e: self.mouse_wheel(e))
         self.scroll_bar.bind("<MouseWheel>", lambda e: self.mouse_wheel(e))
 
-    def scroll_bar_command(self, *args):
+    def scroll_bar_command(self, *yy):
         """ Scroll bar control context and line number bar at the same """
-
-        self.context_text.yview(*args)
-        self.line_number_bar.yview(*args)
+        # yy is that scroll bar move to point
+        self.context_text.yview(*yy)
+        self.line_number_bar.yview(*yy)
 
     def mouse_wheel(self, event):
         """ Mouse wheel control the line number, context and scroll bar"""
+
         # When y positive is 1, and y negative is -1
-        self.line_number_bar.yview_scroll(int( -1 *(event.delta)), "units")
-        self.context_text.yview_scroll(int(  -1 * (event.delta)), "units")
+        self.line_number_bar.yview_scroll(int(-1 * (event.delta)), "units")
+        self.context_text.yview_scroll(int(-1 * (event.delta)), "units")
         return "break"
 
     def create_body_view(self):
@@ -206,9 +210,7 @@ class NotePad(Tk):
 
         # Display the edit of context
         self.context_text = Text(self, wrap="word", undo=True)
-        self.context_text.pack(fill="both", expand="yes")
-
-
+        self.context_text.pack(fill="both", expand=1)
 
         # Set the current line tag
         self.context_text.tag_config("active_line", background="#EEEEE0")
@@ -225,6 +227,13 @@ class NotePad(Tk):
         # Hot key bind
         self._hot_key_bind()
 
+    def update_view(self):
+        """ Update the view when open and new file and so on """
+        # Update the line num display
+        self.update_line_num()
+        # Update the line highlight display
+        self.update_line_highlight()
+
     def open_file(self, event=None):
         """Open file function """
 
@@ -238,6 +247,10 @@ class NotePad(Tk):
             self.context_text.delete(1.0, END)
             with open(input_file, 'r', encoding="utf-8") as _file:
                 self.context_text.insert(1.0, _file.read())
+
+        # Should update view when open file
+        self.update_view()
+
 
     def write_file(self, file_name):
         """ Write file to disk"""
@@ -265,6 +278,9 @@ class NotePad(Tk):
         self.title("New file---NotePad")
         self.context_text.delete(1.0, END)
         self.file_name = None
+
+        # Should update view when open file
+        self.update_view()
 
     def save_as_file(self, event=None):
         """ Save file as other disk """
@@ -352,13 +368,13 @@ class NotePad(Tk):
             self.line_number_bar.delete(1.0, END)
             self.line_number_bar.config(state="disable")
 
-    def troggle_line_highlight(self):
+    def update_line_highlight(self):
         """ Highlight tht current line """
         if self.is_highlight_line.get():
             self.context_text.tag_remove("active_line", 1.0, END)
             self.context_text.tag_add("active_line", "insert linestart",
                                       "insert lineend+1c")
-            self.context_text.after(200, self.troggle_line_highlight)
+            self.context_text.after(200, self.update_line_highlight)
         else:
             self.context_text.tag_remove("active_line", 1.0, END)
 
