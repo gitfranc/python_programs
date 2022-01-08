@@ -19,7 +19,6 @@ from PIL import Image, ImageTk
 
 from settings import Settings
 
-
 class NotePad(Tk):
 
     def __init__(self):
@@ -136,7 +135,7 @@ class NotePad(Tk):
 
         # Settings
         settings_menu = Menu(menu_bar, tearoff=0)
-
+        menu_bar.add_cascade(label="Settings", menu=settings_menu)
         # font menu
         font_menu = Menu(menu_bar, tearoff=0)
         for key in sorted(self.settings.font_families):
@@ -151,13 +150,6 @@ class NotePad(Tk):
             themes_menu.add_radiobutton(label=key, variable=self.theme_choice,
                                         command=self.change_theme)
         settings_menu.add_cascade(label="themes", menu=themes_menu)
-
-
-
-
-        menu_bar.add_cascade(label="Settings",menu=settings_menu)
-
-
 
         # Add the About sub menu
         about_menu = Menu(menu_bar, tearoff=0)
@@ -254,7 +246,10 @@ class NotePad(Tk):
         # Display the number of line
         self.line_number_bar = Text(self, width=4, padx=3, takefocus=0,
                                     bd=0, background="#F0E68C")
+        # Config the line number bar ,such as center
+        self.line_number_bar.tag_config("all_line",justify="center")
         self.line_number_bar.pack(side="left", fill="y")
+
 
         # Display the edit of context
         self.context_text = Text(self, wrap="word", undo=True, font="Consalos 10")
@@ -412,9 +407,12 @@ class NotePad(Tk):
             # Insert the "\n" every line
             line_num_content = "\n".join(str(i) for i in range(1, int(row)))
             self.line_number_bar.delete(1.0, END)
-            self.line_number_bar.insert(1.0, line_num_content)
+            self.line_number_bar.insert(1.10, line_num_content)
+            self.line_number_bar.tag_remove("all_line",1.0, END)
+            self.line_number_bar.tag_add("all_line", 1.0, END)
         else:
             self.line_number_bar.delete(1.0, END)
+            self.line_number_bar.tag_remove("all_line_center", 1.0, END)
         # Set the line number bar state to disable
         self.line_number_bar.config(state="disable")
 

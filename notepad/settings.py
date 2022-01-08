@@ -21,9 +21,9 @@ class Settings:
         }
 
         self.font_families = {
-            "Consalos": "Consalos 10",
-            "Arial": "Arial 10",
-            "Courier": "Courier 10"
+            "Consalos": ("Consalos", 10),
+            "Arial": ("Arial", 10),
+            "Courier": ("Courier", 10),
         }
 
         # The settings of root window
