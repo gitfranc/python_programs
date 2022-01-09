@@ -7,6 +7,7 @@
 
 from tkinter import Tk
 from tkinter import Canvas, Button, colorchooser
+from tkinter import PhotoImage
 
 from settings import Settings
 
@@ -50,29 +51,35 @@ class Paint(Tk):
 
         # Create the Canvas for the draw tools
         self.draw_canvas = Canvas(self, width=self.settings.win_width,
-                                  height=self.settings.win_height * 0.9,
-                                  bg=self.settings.bg_color)
-        self.draw_canvas.pack()
+                                  height=self.settings.win_height,
+                                  bg=self.settings.bg_color, )
+        self.draw_canvas.pack(fill="both",expand=True)
+
+        button_image = PhotoImage(file="images/button.png")
 
         # Create the function button for draw tools
-        btn_start = Button(self, text="Start", name="start")
-        btn_start.pack(side="left", padx=20)
-        btn_pen = Button(self, text="Pen", name="pen")
-        btn_pen.pack(side="left", padx=20)
-        btn_rect = Button(self, text="Rect", name="rect")
-        btn_rect.pack(side="left", padx=20)
-        btn_oval = Button(self, text="Oval", name="oval")
-        btn_oval.pack(side="left", padx=20)
-        btn_clear = Button(self, text="Clear", name="clear")
-        btn_clear.pack(side="left", padx=20)
-        btn_eraser = Button(self, text="Eraser", name="eraser")
-        btn_eraser.pack(side="left", padx=20)
-        btn_line = Button(self, text="Line", name="line")
-        btn_line.pack(side="left", padx=20)
-        btn_line_arrow = Button(self, text="Line Arrow", name="line_arrow")
-        btn_line_arrow.pack(side="left", padx=20)
-        btn_color = Button(self, text="Color", name="color")
-        btn_color.pack(side="left", padx=20)
+        btn_start = Button(self.draw_canvas, text="Start",name="start",
+                           border=0)
+        btn_start.pack(pady=10,padx=10, anchor="w", expand=True)
+        btn_pen = Button(self.draw_canvas, text="Pen", name="pen",border=0)
+        btn_pen.pack(pady=10,padx=10,anchor="w", expand=True)
+        btn_rect = Button(self.draw_canvas, text="Rect", name="rect",border=0)
+        btn_rect.pack(pady=10,padx=10,anchor="w",expand=True)
+        btn_oval = Button(self.draw_canvas, text="Oval", name="oval",border=0)
+        btn_oval.pack(pady=10,padx=10,anchor="w",expand=True)
+        btn_clear = Button(self.draw_canvas, text="Clear", name="clear",border=0)
+        btn_clear.pack(pady=10,padx=10,anchor="w",expand=True)
+        btn_eraser = Button(self.draw_canvas, text="Eraser", name="eraser",
+                            border=0)
+        btn_eraser.pack(pady=10,padx=10,anchor="w",expand=True)
+        btn_line = Button(self.draw_canvas, text="Line", name="line",border=0)
+        btn_line.pack(pady=10,padx=10,anchor="w",expand=True)
+        btn_line_arrow = Button(self.draw_canvas, text="Line Arrow",
+                                name="line_arrow",border=0)
+        btn_line_arrow.pack(pady=10,padx=10,anchor="w",expand=True)
+        btn_color = Button(self.draw_canvas, text="Color", name="color",
+                           border=0)
+        btn_color.pack(pady=10,padx=10,anchor="w",expand=True)
 
         # Bind the event
         btn_pen.bind_class("Button", "<1>", self.event_manager)
