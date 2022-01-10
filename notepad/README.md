@@ -1,8 +1,9 @@
-## 项目说明
+## Project Introduction
 
-主要完成类似于计算本的功能，主要有显示行号，文件的保存和打开，主题的修改等
+The main completion  functions of similar to notepad,  such as display line number, save and open files, 
+theme modification, etc  
 
-
-## 版本说明
+## Version
 ### Version 2.1
-- 修改项目命名规则，类采用大驼峰，方法采用小驼峰，变量采用下划线。
+- Change the rules of project naming, little camel-case for classes, big camel-case for methods, and 
+underscores for variables.  

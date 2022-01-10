@@ -1,8 +1,10 @@
-## 项目说明
+## Project Introduction
 
-主要完成类似于window的简单画图软件的功能，主要包括，画直线，画矩形，画椭圆，选择颜色，
-清屏等指令。
+The main completion  functions of similar to tools of draw windows, such as draw line, draw 
+rectangle, draw oval and choose color for pen so on.
 
-## 版本说明
+## Version
+
 ### Version 1.5
-- 修改项目命名规则，类采用大驼峰，方法采用小驼峰，变量采用下划线。
+- Change the rules of project naming, little camel-case for classes, big camel-case for methods, 
+and underscores for variables.
