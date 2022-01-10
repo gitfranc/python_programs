@@ -18,6 +18,7 @@ class Settings:
         # color
         self.fg_color = "#FF0000"
         self.bg_color = "#000000"
+        self.BLACK = "#000000"
         self.RED = "#FF0000"
         self.GREEN = "#00FF00"
         self.YELLOW = "#FFFF00"

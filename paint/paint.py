@@ -55,8 +55,6 @@ class Paint(Tk):
                                   bg=self.settings.bg_color, )
         self.draw_canvas.pack(fill="both",expand=True)
 
-        button_image = PhotoImage(file="images/button.png")
-
         # Create the function button for draw tools
         btn_start = Button(self.draw_canvas, text="Start",name="start",
                            border=0)
@@ -88,9 +86,22 @@ class Paint(Tk):
     def bind_event(self):
         """ Bind the event """
         self.draw_canvas.bind("<ButtonRelease-1>", self.stop_draw)
+        self.draw_canvas.bind("<Button-3>", self.change_bg_color)
         self.bind("<KeyPress-r>", self.choose_color)
         self.bind("<KeyPress-g>", self.choose_color)
         self.bind("<KeyPress-y>", self.choose_color)
+
+    def change_bg_color(self, event):
+        """ Change the background color when mouse left key press """
+        print("change_bg_color")
+        bg_color = colorchooser.askcolor(color=self.settings.bg_color,
+                                         title="Select the color")
+        self.settings.bg_color = bg_color[1]
+        if not self.settings.bg_color:
+            self.settings.bg_color = self.settings.BLACK
+        # Change the bg color
+        self.draw_canvas.config(bg=self.settings.bg_color)
+        print(bg_color)
 
     def choose_color(self, event):
         """ Choose the fg color as red, green and yellow when key press r/g/y"""
