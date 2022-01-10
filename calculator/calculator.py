@@ -42,7 +42,7 @@ class Calculator:
         self.root_window.minsize(self.settings.win_width,
                 self.settings.win_height)
         #set the icon for the window
-        self.root_window.iconbitmap(self._resource_path("images/win.ico"))
+        self.root_window.iconbitmap(self._resourcePath("images/win.ico"))
 
 
         self.record = StringVar()
@@ -51,7 +51,7 @@ class Calculator:
         self.result.set("")
 
 
-    def _resource_path(self, relative_path):
+    def _resourcePath(self, relative_path):
         if getattr(sys, 'frozen', False):
             base_path = sys._MEIPASS
         else:
@@ -60,7 +60,7 @@ class Calculator:
 
 
 
-    def clear_ce(self):
+    def clearCe(self):
         self.record.set("0")
         self.result.set("")
 
@@ -117,7 +117,7 @@ class Calculator:
         else:
             self.result.set(str(res))
 
-    def pos_neg(self):
+    def posNeg(self):
         try:
             res = eval(self.record.get())
         except Exception:
@@ -131,7 +131,7 @@ class Calculator:
                 self.record.set(str(abs(res)))
 
 
-    def cal_result_and_button(self):
+    def calResultAndButton(self):
         ''' Display the result and button '''
 
         # Display the result of calculation
@@ -157,7 +157,7 @@ class Calculator:
                     height=self.settings.widget_height)
         Button(self.root_window, text="CE", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    font=self.font,bd=0,command=self.clear_ce).place(
+                    font=self.font,bd=0,command=self.clearCe).place(
                     x=self.settings.widget_width * 1,
                     y=140 + self.settings.widget_height * 0,
                     width=self.settings.widget_width,
@@ -300,7 +300,7 @@ class Calculator:
         # row = 6
         Button(self.root_window, text="+/-", width=self.settings.widget_width,
                     fg=self.settings.color_btn_fg, bg=self.settings.color_btn_bg,
-                    font=self.font,bd=0,command=self.pos_neg).place(
+                    font=self.font,bd=0,command=self.posNeg).place(
                     x=self.settings.widget_width * 0,
                     y=140 + self.settings.widget_height * 5,
                     width=self.settings.widget_width,
@@ -327,11 +327,11 @@ class Calculator:
                     width=self.settings.widget_width,
                     height=self.settings.widget_height)
 
-    def run_main(self):
+    def runMain(self):
         ''' The main function of calculator '''
 
         # Step2 create the widges and set them property
-        self.cal_result_and_button()
+        self.calResultAndButton()
 
         # Step3 the tkinter main loop, wait for keyevent and so on
         self.root_window.mainloop()
@@ -340,4 +340,4 @@ class Calculator:
 # Into main function
 if __name__ == '__main__':
     calculator = Calculator()
-    calculator.run_main()
+    calculator.runMain()

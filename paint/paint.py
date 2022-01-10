@@ -30,12 +30,12 @@ class Paint(Tk):
         self.draw_enable = True
 
         # Set the window info for draw tools, such as width and height
-        self.set_window()
+        self.setWindow()
 
         # Create the widgets for draw tools
-        self.create_widgets()
+        self.createWidgets()
 
-    def set_window(self):
+    def setWindow(self):
         """ Set the window of draw tools """
         self.title("The Sample Paint")
         self.iconbitmap("images/win.ico")
@@ -46,7 +46,7 @@ class Paint(Tk):
                        (max_width - self.settings.win_width) / 2,
                        (max_height - self.settings.win_height) / 2))
 
-    def create_widgets(self):
+    def createWidgets(self):
         """ Create the widgets for draw tools """
 
         # Create the Canvas for the draw tools
@@ -80,20 +80,20 @@ class Paint(Tk):
         btn_color.pack(pady=10,padx=10,anchor="w",expand=True)
 
         # Bind the event
-        btn_pen.bind_class("Button", "<1>", self.event_manager)
-        self.bind_event()
+        btn_pen.bind_class("Button", "<1>", self.eventManager)
+        self.bindEvent()
 
-    def bind_event(self):
+    def bindEvent(self):
         """ Bind the event """
-        self.draw_canvas.bind("<ButtonRelease-1>", self.stop_draw)
-        self.draw_canvas.bind("<Button-3>", self.change_bg_color)
-        self.bind("<KeyPress-r>", self.choose_color)
-        self.bind("<KeyPress-g>", self.choose_color)
-        self.bind("<KeyPress-y>", self.choose_color)
+        self.draw_canvas.bind("<ButtonRelease-1>", self.stopDraw)
+        self.draw_canvas.bind("<Button-3>", self.changeBgColor)
+        self.bind("<KeyPress-r>", self.chooseColor)
+        self.bind("<KeyPress-g>", self.chooseColor)
+        self.bind("<KeyPress-y>", self.chooseColor)
 
-    def change_bg_color(self, event):
+    def changeBgColor(self, event):
         """ Change the background color when mouse left key press """
-        print("change_bg_color")
+        print("changeBgColor")
         bg_color = colorchooser.askcolor(color=self.settings.bg_color,
                                          title="Select the color")
         self.settings.bg_color = bg_color[1]
@@ -103,9 +103,9 @@ class Paint(Tk):
         self.draw_canvas.config(bg=self.settings.bg_color)
         print(bg_color)
 
-    def choose_color(self, event):
+    def chooseColor(self, event):
         """ Choose the fg color as red, green and yellow when key press r/g/y"""
-        print("choose_color")
+        print("chooseColor")
         if event.char == "r":
             self.settings.fg_color = self.settings.RED
         elif event.char == "g":
@@ -113,25 +113,25 @@ class Paint(Tk):
         elif event.char == "y":
             self.settings.fg_color = self.settings.YELLOW
 
-    def stop_draw(self, event):
+    def stopDraw(self, event):
         """ Deal with the mouse left button release """
         self.draw_first_flag = False
         self.last_draw = 0
 
-    def event_manager(self, event):
+    def eventManager(self, event):
         """ Deal with the event things """
         name = event.widget.winfo_name()
         print(name)
         if name == "line":
-            self.draw_canvas.bind("<B1-Motion>", self.draw_line)
+            self.draw_canvas.bind("<B1-Motion>", self.drawLine)
         elif name == "line_arrow":
-            self.draw_canvas.bind("<B1-Motion>", self.draw_line_arrow)
+            self.draw_canvas.bind("<B1-Motion>", self.drawLineArrow)
         elif name == "rect":
-            self.draw_canvas.bind("<B1-Motion>", self.draw_rect)
+            self.draw_canvas.bind("<B1-Motion>", self.drawRect)
         elif name == "oval":
-            self.draw_canvas.bind("<B1-Motion>", self.draw_oval)
+            self.draw_canvas.bind("<B1-Motion>", self.drawOval)
         elif name == "pen":
-            self.draw_canvas.bind("<B1-Motion>", self.draw_pen)
+            self.draw_canvas.bind("<B1-Motion>", self.pen)
         elif name == "eraser":
             self.draw_canvas.bind("<B1-Motion>", self.eraser)
         elif name == "clear":
@@ -143,7 +143,7 @@ class Paint(Tk):
         elif name == "start":
             self.draw_enable = True
 
-    def start_draw(self, event):
+    def startDraw(self, event):
         """ Start the draw """
         if not self.draw_first_flag:
             self.start_x = event.x
@@ -156,53 +156,53 @@ class Paint(Tk):
     def eraser(self, event):
         """ Eraser the last draw """
         if self.draw_enable:
-            self.start_draw(event)
+            self.startDraw(event)
             self.draw_canvas.create_rectangle(event.x - 4, event.y - 4,
                                               event.x + 4, event.y + 4,
                                               fill=self.settings.bg_color)
             self.start_x = event.x
             self.start_y = event.y
 
-    def draw_pen(self, event):
+    def pen(self, event):
         """ Draw the rect """
         if self.draw_enable:
-            self.start_draw(event)
+            self.startDraw(event)
             self.draw_canvas.create_line(self.start_x, self.start_y, event.x,
                                          event.y, fill=self.settings.fg_color)
             self.start_x = event.x
             self.start_y = event.y
 
-    def draw_oval(self, event):
+    def drawOval(self, event):
         """ Draw the rect """
         if self.draw_enable:
-            self.start_draw(event)
+            self.startDraw(event)
             self.last_draw = \
                 self.draw_canvas.create_oval(self.start_x, self.start_y,
                                              event.x, event.y,
                                              outline=self.settings.fg_color)
 
-    def draw_rect(self, event):
+    def drawRect(self, event):
         """ Draw the rect """
         if self.draw_enable:
-            self.start_draw(event)
+            self.startDraw(event)
             self.last_draw = \
                 self.draw_canvas.create_rectangle(self.start_x, self.start_y,
                                                   event.x, event.y,
                                                   outline=self.settings.fg_color)
 
-    def draw_line_arrow(self, event):
+    def drawLineArrow(self, event):
         """ Draw the line arrow """
         if self.draw_enable:
-            self.start_draw(event)
+            self.startDraw(event)
             self.last_draw = \
                 self.draw_canvas.create_line(self.start_x, self.start_y,
                                              event.x, event.y, arrow="last",
                                              fill=self.settings.fg_color)
 
-    def draw_line(self, event):
+    def drawLine(self, event):
         """ Draw the line """
         if self.draw_enable:
-            self.start_draw(event)
+            self.startDraw(event)
             self.last_draw = \
                 self.draw_canvas.create_line(self.start_x, self.start_y,
                                              event.x,event.y,
